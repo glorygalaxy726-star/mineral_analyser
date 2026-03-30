@@ -36,14 +36,44 @@ def clean_val(val):
     match = re.search(r"[-+]?\d*\.\d+|\d+", s)
     return float(match.group()) if match else 0.0
 
-# --- APP UI ---
+
+
+# --- 2. PAGE NAVIGATION SETUP ---
 st.set_page_config(page_title="Thamani Analytics", layout="wide")
-st.title("🔬 Professional Mineral Valuation")
 
-file = st.file_uploader("Upload Excel", type=['xlsx'])
+# Sidebar Menu
+st.sidebar.title("💎 Thamani Menu")
+page = st.sidebar.radio("Go to:", ["Welcome Home", "Mineral Scanner"])
 
-if file:
-    try:
+# --- 3. PAGE 1: WELCOME HOME ---
+if page == "Welcome Home":
+    st.title("🔬 Thamani Mineral Analytics")
+    st.markdown("""
+    ### Welcome to the **Thamani Digital Lab**.
+    
+    This tool is designed for chemists and mineral traders in Tanzania and world in general to quickly convert laboratory oxide results into 
+    marketable element values.This tool bridges the gap between **Laboratory Science** and **Market Value** for the Tanzanian mining sector.
+    
+    **What you can do here:**
+    
+    * ⚡ **Auto-Extract:** Read Excel reports from any lab in Tanzania.
+    
+    * 🧪 **Stoichiometric conversion:** Convert Oxides (PbO, Na2O) to pure Element %.
+    
+    * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton based on purity.
+    """)
+    
+    st.info("👈 Use the sidebar menu to open the **Mineral Scanner**.")
+    st.divider()
+    st.caption("Developed by Glory Benson | Chemist & digital researcher")
+# --- 4. PAGE 2: MINERAL SCANNER ---
+elif page == "Mineral Scanner":
+    st.title("📊 Professional Mineral Valuation")
+    st.write("Upload your Excel lab report below.")
+
+    file = st.file_uploader("Upload Lab Report (.xlsx)", type=['xlsx'])
+    if file is not None:
+      try:
         df = pd.read_excel(file, header=None)
         extracted = {}
 
@@ -83,5 +113,5 @@ if file:
         else:
             st.warning("No matching mineral labels found in the file.")
             
-    except Exception as e:
-        st.error(f"Critical Error: {e}")
+      except Exception as e:
+              st.error(f"Critical Error: {e}")

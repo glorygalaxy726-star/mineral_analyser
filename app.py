@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import re
+from fpdf import FPDF
 
 # 1. Configuration & Constants
 CHEMICAL_MAP = {
@@ -56,7 +57,7 @@ if page == "Welcome Home":
     
     **What you can do here:**
     
-    * ⚡ **Auto-Extract:** Read Excel reports from any lab in Tanzania.
+    * ⚡ **Auto-Extract:** Read Excel and pdf reports from any lab in Tanzania.
     
     * 🧪 **Stoichiometric conversion:** Convert Oxides (PbO, Na2O) to pure Element %.
     
@@ -69,47 +70,39 @@ if page == "Welcome Home":
 # --- 4. PAGE 2: MINERAL SCANNER ---
 elif page == "Mineral Scanner":
     st.title("📊 Professional Mineral Valuation")
-    st.write("Upload your Excel lab report below.")
+    st.write("Upload your Excel or Pdf lab report below.")
+            file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
 
-    file = st.file_uploader("Upload Lab Report (.xlsx)", type=['xlsx'])
-    if file is not None:
-      try:
-        df = pd.read_excel(file, header=None)
+    if file:
         extracted = {}
+        
+        # --- IF PDF ---
+        if file.name.endswith('.pdf'):
+            reader = pypdf.PdfReader(file)
+            text = " ".join([page.extract_text() for page in reader.pages]).upper()
+            for key in CHEMICAL_MAP.keys():
+                if key in text:
+                    match = re.search(rf"{key}\s*[:=-]?\s*(\d*\.?\d+)", text)
+                    if match: extracted[key] = float(match.group(1))
+        
+        # --- IF EXCEL ---
+        else:
+            df = pd.read_excel(file, header=None)
+            for r in range(len(df)):
+                for c in range(len(df.columns)):
+                    cell = str(df.iloc[r, c]).strip().upper().replace(" ", "")
+                    if cell in CHEMICAL_MAP and c + 1 < len(df.columns):
+                        extracted[cell] = clean_val(df.iloc[r, c + 1])
 
-        # Scan Grid
-        for r in range(len(df)):
-            for c in range(len(df.columns)):
-                cell = str(df.iloc[r, c]).strip().upper().replace(" ", "")
-                if cell in CHEMICAL_MAP:
-                    if c + 1 < len(df.columns):
-                        val = df.iloc[r, c + 1]
-                        extracted[cell] = clean_val(val)
-
+        # --- RESULTS (Same for both) ---
         if extracted:
-            st.success(f"Successfully processed {len(extracted)} minerals.")
-            c1, c2 = st.columns(2)
+            # (Your existing math loop for val_data and total_value goes here)
+            st.table(val_data)
+            st.metric("Total Value", f"{total_value:,.2f} TZS/MT")
             
-            total_value = 0
-            with c1:
-                st.subheader("Laboratory Results")
-                for k, v in extracted.items():
-                    st.write(f"{CHEMICAL_MAP[k]['label']}: **{v:.4f}%**")
-            
-            with c2:
-                st.subheader("Market Valuation (per Ton)")
-                val_data = []
-                for k, v in extracted.items():
-                    pure_pct = v * CHEMICAL_MAP[k]['factor']
-                    price_rate = CHEMICAL_MAP[k]['price']
-                    worth = pure_pct * price_rate
-                    total_value += worth
+            pdf_bytes = create_pdf(val_data, total_value)
+            st.download_button("Download Analysis PDF", pdf_bytes, "analysis.pdf")
                     
-                    # This is the line that shows both the % and the Price
-                    val_data.append({"Element": CHEMICAL_MAP[k]['symbol'], "Pure %": f"{pure_pct:.4f}", "Value (TZS)": f"{worth:,.2f}"})
-                
-                st.table(val_data)
-                st.metric("Total Ore Value", f"{total_value:,.2f} TZS/MT")
         else:
             st.warning("No matching mineral labels found in the file.")
             

@@ -105,5 +105,5 @@ elif page == "Mineral Scanner":
                     
         else:
             st.warning("No matching mineral labels found in the file.")
-        except Exception as e:
+     except Exception as e:
               st.error(f"Critical Error: {e}")

@@ -105,5 +105,19 @@ elif page == "Mineral Scanner":
                     
         else:
             st.warning("No matching mineral labels found in the file.")
-    except Exception as e:
-              st.error(f"Critical Error: {e}")
+if file:
+    try:
+        # (All your Excel/PDF analysis code)
+        if extracted:
+            st.table(val_data)
+            st.metric("Total Value", f"{total_value:,.2f}")
+                
+            # PDF Generation & Download
+            pdf_bytes = create_pdf(val_data, total_value)
+            st.download_button("Download Analysis PDF", pdf_bytes, "analysis.pdf")
+         else:
+            st.warning("No minerals found.")
+
+     except Exception as e:
+            st.error(f"Error: {e}")
+        

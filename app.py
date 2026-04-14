@@ -70,8 +70,8 @@ if page == "Welcome Home":
 # --- 4. PAGE 2: MINERAL SCANNER ---
 elif page == "Mineral Scanner":
     st.title("📊 Professional Mineral Valuation")
-    st.write("Upload your Excel or Pdf lab report below.")
-            file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
+    st.write("Upload your Excel or pdf lab report below.")
+    file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
 
     if file:
         extracted = {}

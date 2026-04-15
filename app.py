@@ -125,16 +125,15 @@ elif page == "Mineral Scanner":
                    e_pct = v * m['factor']
     
                 # Define it here...
-                  price_val = e_pct * m['price'] 
-    
-                  val_data.append({
-                 "Mineral": m['label'],
-                 "Oxide %": round(v, 2),
-                 "Element %": round(e_pct, 4),
+                   price_val = e_pct * m['price'] 
+                   val_data.append({
+                       "Mineral": m['label'],
+                       "Oxide %": round(v, 2),
+                       "Element %": round(e_pct, 4),
                # ...and use the SAME name here!
-                 "Value (TZS/MT)": round(price_val, 2) 
-                })
-                total_value += price_val # Use it here too
+                       "Value (TZS/MT)": round(price_val, 2) 
+                   })
+                   total_value += price_val # Use it here too
 
                 # Step 3: Display Results
               # 1. Convert your list of results into a DataFrame

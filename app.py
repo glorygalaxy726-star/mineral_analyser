@@ -118,6 +118,6 @@ if file:
         else:
             st.warning("No minerals found.")
 
-     except Exception as e:
+    except Exception as e:
             st.error(f"Error: {e}")
         

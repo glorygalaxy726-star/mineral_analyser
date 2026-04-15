@@ -62,7 +62,7 @@ def create_pdf(val_data, total_value):
     pdf.ln(5)
     pdf.set_font("Times", 'B', 12)
     pdf.cell(0, 10, f"TOTAL MARKET VALUE: {total_value:,.2f} TZS/MT", ln=True)
-   return pdf.output(dest='S')
+    return pdf.output(dest='S')
 
 # --- 3. UI SETUP ---
 

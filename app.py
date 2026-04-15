@@ -124,10 +124,9 @@ elif page == "Mineral Scanner":
                         pdf.cell(50, 10, clean_name, 1)
                         pdf.cell(40, 10, str(item['Oxide %']), 1)
                         pdf.ln()
-    
                               # ... rest of your code ...
                     # Convert the bytearray to standard bytes
-                   return bytes(pdf.output(dest='S'))
+                    return bytes(pdf.output(dest='S'))
             # Step 2: Math & Calculations
             # --- 1. THE CALCULATION LOOP ---
             if extracted:

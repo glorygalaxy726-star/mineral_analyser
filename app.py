@@ -95,7 +95,7 @@ elif page == "Mineral Scanner":
             # Step 1: Data Extraction
             if file.name.endswith('.pdf'):
                 with pdfplumber.open(file) as pdf:
-                    content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+                    content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()] if p.extract_text()])
                 
                 search_text = content.upper().replace(" ", "")
                 for key in CHEMICAL_MAP.keys():
@@ -108,7 +108,8 @@ elif page == "Mineral Scanner":
                 # Scan entire Excel for keywords
                 for r in range(len(df)):
                     for c in range(len(df.columns)):
-                        cell_txt = df.iloc[r, c].strip().upper().replace(" ", "")
+                        # Adding str() converts the number to text first
+                        cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
                         if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
                             extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
 

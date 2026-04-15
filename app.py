@@ -116,20 +116,22 @@ elif page == "Mineral Scanner":
                             pdf.cell(50, 10, clean_name, 1)
 
             # Step 2: Math & Calculations
-            if extracted:
-                val_data = []
-                total_value = 0
-                for k, v in extracted.items():
-                    meta = CHEMICAL_MAP[k]
-                    e_pct = v * meta['factor']
-                    m_val = e_pct * meta['price']
+            # --- 1. THE CALCULATION LOOP ---
+        for k, v in extracted.items():
+           m = CHEMICAL_MAP[k]
+           e_pct = v * m['factor']
     
-                    val_data.append({
-                        "Mineral": meta['label'],  # Keeps the proper subscripts ($...$)
-                        "Oxide %": round(v, 2),    # Fixes long zeros
-                        "Element %": round(e_pct, 4), 
-                        "Value (TZS/MT)": round(m_val, 2)  })
-                    total_value += price_val
+    # Define it here...
+          price_val = e_pct * m['price'] 
+    
+         val_data.append({
+           "Mineral": m['label'],
+           "Oxide %": round(v, 2),
+           "Element %": round(e_pct, 4),
+        # ...and use the SAME name here!
+           "Value (TZS/MT)": round(price_val, 2) 
+           })
+       total_value += price_val # Use it here too
 
                 # Step 3: Display Results
               # 1. Convert your list of results into a DataFrame

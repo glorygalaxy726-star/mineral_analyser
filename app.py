@@ -83,7 +83,7 @@ if page == "Welcome Home":
     """)
     st.info("👈 Use the sidebar menu to open the **Mineral Scanner**.")
     st.divider()
-    st.caption("Developed by Glory Benson | Chemist & Digital Researcher")
+    st.caption("Developed by Glory Benson | Chemist & Digital Researcher |0616648724")
 
 elif page == "Mineral Scanner":
     st.title("📊 Mineral Valuation Scanner")
@@ -111,6 +111,9 @@ elif page == "Mineral Scanner":
                         cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
                         if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
                             extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
+                            # Inside your create_pdf function, ensure this line exists:
+                            clean_name = item['Mineral'].replace('$', '').replace('_', '')
+                            pdf.cell(50, 10, clean_name, 1)
 
             # Step 2: Math & Calculations
             if extracted:
@@ -119,19 +122,18 @@ elif page == "Mineral Scanner":
                 for k, v in extracted.items():
                     meta = CHEMICAL_MAP[k]
                     e_pct = v * meta['factor']
-                    price_val = e_pct * meta['price']
-                    
+                    m_val = e_pct * meta['price']
+    
                     val_data.append({
-                        "Mineral": meta['label'],
-                        "Oxide %": v,
-                        "Element %": e_pct,
-                        "Value (TZS/MT)": price_val
-                    })
+                        "Mineral": meta['label'],  # Keeps the proper subscripts ($...$)
+                        "Oxide %": round(v, 2),    # Fixes long zeros
+                        "Element %": round(e_pct, 4), 
+                        "Value (TZS/MT)": round(m_val, 2)  })
                     total_value += price_val
 
                 # Step 3: Display Results
                 st.write("### Analysis Results")
-                st.dataframe(pd.DataFrame(val_data), use_container_width=True)
+                st.table(pd.DataFrame(val_data)), use_container_width=True)
                 st.metric("Estimated Total Value", f"{total_value:,.2f} TZS/MT")
                 
                 # Step 4: PDF Generation

@@ -149,11 +149,11 @@ elif page == "Mineral Scanner":
                 # Step 4: PDF Generation
                     report_pdf = create_pdf(val_data, total_value)
                     st.download_button(
-                    label="Download Analysis PDF",
-                    data=report_pdf,
-                    file_name="Thamani_Valuation_Report.pdf",
-                    mime="application/pdf"
-                )
+                        label="Download Analysis PDF",
+                        data=report_pdf,
+                        file_name="Thamani_Valuation_Report.pdf",
+                        mime="application/pdf"
+                   )
             else:
                 st.warning("No minerals recognized. Ensure the file contains labels like SIO2 or FE2O3.")
 

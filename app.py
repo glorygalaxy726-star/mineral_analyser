@@ -133,14 +133,14 @@ elif page == "Mineral Scanner":
 
                 # Step 3: Display Results
               # 1. Convert your list of results into a DataFrame
-                   results_df = pd.DataFrame(val_data)
+                results_df = pd.DataFrame(val_data)
 
                 # 2. Use st.table instead of st.dataframe
              # This is the ONLY way to make the subscripts look professional
-                  st.table(results_df)
+                st.table(results_df)
 
                 # 3. Use st.metric for the big total at the bottom
-                 st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
+                st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
                 # Step 4: PDF Generation
                 report_pdf = create_pdf(val_data, total_value)

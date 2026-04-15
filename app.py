@@ -112,21 +112,21 @@ elif page == "Mineral Scanner":
                         if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
                             extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
                             # Inside your create_pdf function, ensure this line exists:
-                           def create_pdf(val_data, total_value):
-                               pdf = FPDF()
-                               pdf.add_page()
-                               pdf.set_font("Arial", 'B', 12)
+                def create_pdf(val_data, total_value):
+                    pdf = FPDF()
+                    pdf.add_page()
+                    pdf.set_font("Arial", 'B', 12)
     
                               # THIS IS THE MISSING LINK:
-                               for item in val_data: 
+                    for item in val_data: 
                                   # Now 'item' is defined for the lines below
-                                   clean_name = item['Mineral'].replace('$', '').replace('_', '')
-                                   pdf.cell(50, 10, clean_name, 1)
-                                   pdf.cell(40, 10, str(item['Oxide %']), 1)
-                                   pdf.ln()
+                        clean_name = item['Mineral'].replace('$', '').replace('_', '')
+                        pdf.cell(50, 10, clean_name, 1)
+                        pdf.cell(40, 10, str(item['Oxide %']), 1)
+                        pdf.ln()
     
                               # ... rest of your code ...
-                               return pdf.output(dest='S')
+                 return pdf.output(dest='S')
             # Step 2: Math & Calculations
             # --- 1. THE CALCULATION LOOP ---
             if extracted:

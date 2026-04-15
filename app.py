@@ -117,6 +117,9 @@ elif page == "Mineral Scanner":
 
             # Step 2: Math & Calculations
             # --- 1. THE CALCULATION LOOP ---
+            if extracted:
+               val_data = []
+               total_value = 0
                for k, v in extracted.items():
                    m = CHEMICAL_MAP[k]
                    e_pct = v * m['factor']

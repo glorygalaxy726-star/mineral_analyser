@@ -127,7 +127,7 @@ elif page == "Mineral Scanner":
     
                               # ... rest of your code ...
                     # Convert the bytearray to standard bytes
-                     return bytes(pdf.output(dest='S'))
+                   return bytes(pdf.output(dest='S'))
             # Step 2: Math & Calculations
             # --- 1. THE CALCULATION LOOP ---
             if extracted:

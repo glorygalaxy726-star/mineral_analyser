@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 import re
-import pypdf
+import pdfplumber 
 from fpdf import FPDF
 import io
 
-# 1. CONFIGURATION (LaTeX enabled for UI display)
+# 1. MINERAL CONFIGURATION
 CHEMICAL_MAP = {
     "SIO2": {"label": "$SiO_2$", "factor": 0.4674, "price": 3000},
     "FE2O3": {"label": "$Fe_2O_3$", "factor": 0.6994, "price": 15000},
@@ -23,7 +23,7 @@ CHEMICAL_MAP = {
     "AG": {"label": "Ag (Silver)", "factor": 1.0, "price": 2000000}
 }
 
-# --- HELPER FUNCTIONS ---
+# 2. PDF GENERATOR (Uses "Times" to avoid font errors)
 def create_pdf(val_data, total_value):
     pdf = FPDF()
     pdf.add_page()
@@ -31,9 +31,88 @@ def create_pdf(val_data, total_value):
     pdf.cell(0, 10, "Thamani Mineral Analysis Report", ln=True, align='C')
     pdf.ln(10)
     
+    # Header
     pdf.set_font("Times", 'B', 11)
     pdf.cell(50, 10, "Mineral", 1)
     pdf.cell(35, 10, "Oxide %", 1)
+    pdf.cell(35, 10, "Element %", 1)
+    pdf.cell(60, 10, "Value (TZS/MT)", 1)
+    pdf.ln()
+    
+    # Data Rows
+    pdf.set_font("Times", '', 10)
+    for item in val_data:
+        name = item['Mineral'].replace('$', '') # Clean LaTeX for PDF
+        pdf.cell(50, 10, name, 1)
+        pdf.cell(35, 10, f"{item['Oxide %']:.2f}", 1)
+        pdf.cell(35, 10, f"{item['Element %']:.2f}", 1)
+        pdf.cell(60, 10, f"{item['Value (TZS/MT)']:,.2f}", 1)
+        pdf.ln()
+    
+    pdf.ln(5)
+    pdf.set_font("Times", 'B', 12)
+    pdf.cell(0, 10, f"TOTAL VALUE: {total_value:,.2f} TZS/MT", ln=True)
+    return pdf.output(dest='S').encode('latin-1')
+
+# 3. INTERFACE
+st.set_page_config(page_title="Thamani Analytics", layout="wide")
+st.sidebar.title("💎 Menu")
+page = st.sidebar.radio("Go to:", ["Welcome Home", "Mineral Scanner"])
+
+if page == "Welcome Home":
+    st.title("🔬 Thamani Mineral Analytics")
+    st.write("Convert laboratory results to market value.")
+
+elif page == "Mineral Scanner":
+    st.title("📊 Mineral Scanner")
+    file = st.file_uploader("Upload Lab Report", type=['xlsx', 'pdf'])
+
+    if file:
+        extracted = {}
+        try:
+            # 4. DATA EXTRACTION
+            if file.name.endswith('.pdf'):
+                with pdfplumber.open(file) as pdf:
+                    full_text = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+            else:
+                df = pd.read_excel(file).astype(str)
+                full_text = " ".join(df.values.flatten())
+
+            # 5. MATH & LOGIC
+            clean_text = full_text.upper().replace(" ", "")
+            for key in CHEMICAL_MAP.keys():
+                # Look for KEY + any characters + FIRST NUMBER found
+                pattern = rf"{key}.*?(\d+\.?\d*)"
+                match = re.search(pattern, clean_text)
+                if match:
+                    extracted[key] = float(match.group(1))
+
+            if extracted:
+                val_data = []
+                total_val = 0
+                for k, v in extracted.items():
+                    m = CHEMICAL_MAP[k]
+                    e_pct = v * m['factor']
+                    market_val = e_pct * m['price']
+                    val_data.append({
+                        "Mineral": m['label'],
+                        "Oxide %": v,
+                        "Element %": e_pct,
+                        "Value (TZS/MT)": market_val
+                    })
+                    total_val += market_val
+
+                # 6. RESULTS DISPLAY
+                st.dataframe(pd.DataFrame(val_data), use_container_width=True)
+                st.metric("Total Market Value", f"{total_val:,.2f} TZS/MT")
+                
+                pdf_report = create_pdf(val_data, total_val)
+                st.download_button("Download Report", pdf_report, "Analysis.pdf")
+            else:
+                st.warning("No minerals found. Please check your file content.")
+
+        except Exception as e:
+            st.error(f"Something went wrong: {e}")
     pdf.cell(35, 10, "Element %", 1)
     pdf.cell(60, 10, "Value (TZS/MT)", 1)
     pdf.ln()

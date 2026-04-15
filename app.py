@@ -115,7 +115,7 @@ if file:
             # PDF Generation & Download
             pdf_bytes = create_pdf(val_data, total_value)
             st.download_button("Download Analysis PDF", pdf_bytes, "analysis.pdf")
-         else:
+        else:
             st.warning("No minerals found.")
 
      except Exception as e:

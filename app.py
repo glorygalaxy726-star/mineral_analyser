@@ -95,7 +95,7 @@ elif page == "Mineral Scanner":
             # Step 1: Data Extraction
             if file.name.endswith('.pdf'):
                 with pdfplumber.open(file) as pdf:
-                    content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()] if p.extract_text()]) 
+                    content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()]) 
                 search_text = content.upper().replace(" ", "")
                 for key in CHEMICAL_MAP.keys():
                     pattern = rf"{key}.*?(\d+\.?\d*)"

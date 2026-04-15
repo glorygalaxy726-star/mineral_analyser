@@ -1,53 +1,123 @@
 import streamlit as st
 import pandas as pd
 import re
+import pdfplumber 
 from fpdf import FPDF
+import io
 
-# 1. Configuration & Constants
+# 1. CONFIGURATION (LaTeX enabled for UI display)
 CHEMICAL_MAP = {
-    "SIO2": {"label": "SiO$_2$", "factor": 0.4674, "symbol": "Si", "price": 3000},
-    "FE2O3": {"label": "Fe$_2$O$_3$", "factor": 0.6994, "symbol": "Fe", "price": 15000},
-    "AL2O3": {"label": "Al$_2$O$_3$", "factor": 0.5293, "symbol": "Al", "price": 12000},
-    "CAO": {"label": "CaO", "factor": 0.7147, "symbol": "Ca", "price": 5000},
-    "MGO": {"label": "MgO", "factor": 0.6030, "symbol": "Mg", "price": 18000},
-    "TIO2": {"label": "TiO$_2$", "factor": 0.5993, "symbol": "Ti", "price": 45000},
-    "PBO": {"label": "PbO", "factor": 0.9283, "symbol": "Pb", "price": 55000}, # Lead Oxide
-    "MNO": {"label": "MnO", "factor": 0.7745, "symbol": "Mn", "price": 10000},
-    "SIO2": {"label": "SiO$_2$", "factor": 0.4674, "symbol": "Si", "price": 3000},
-    
-    # SODIUM & POTASSIUM (Commonly as Oxides)
-    "NA2O": {"label": "Na$_2$O", "factor": 0.7419, "symbol": "Na", "price": 8000},
-    "K2O": {"label": "K$_2$O", "factor": 0.8302, "symbol": "K", "price": 9500},
-    
-    # GRAPHITE / CARBON (Free Element / Factor = 1.0)
-    "C": {"label": "Graphite (C)", "factor": 1.0, "symbol": "C", "price": 25000},
-    "GRAPHITE": {"label": "Graphite (C)", "factor": 1.0, "symbol": "C", "price": 25000},
-    # FREE ELEMENTS (Factor = 1.0)
-    "AU": {"label": "Au (Gold)", "factor": 1.0, "symbol": "Au", "price": 180000000}, # Price per 1% per Ton
-    "CU": {"label": "Cu (Copper)", "factor": 1.0, "symbol": "Cu", "price": 250000},
-    "AG": {"label": "Ag (Silver)", "factor": 1.0, "symbol": "Ag", "price": 2000000}
+    "SIO2": {"label": "$SiO_2$", "factor": 0.4674, "price": 3000},
+    "FE2O3": {"label": "$Fe_2O_3$", "factor": 0.6994, "price": 15000},
+    "AL2O3": {"label": "$Al_2O_3$", "factor": 0.5293, "price": 12000},
+    "CAO": {"label": "$CaO$", "factor": 0.7147, "price": 5000},
+    "MGO": {"label": "$MgO$", "factor": 0.6030, "price": 18000},
+    "TIO2": {"label": "$TiO_2$", "factor": 0.5993, "price": 45000},
+    "PBO": {"label": "$PbO$", "factor": 0.9283, "price": 55000},
+    "MNO": {"label": "$MnO$", "factor": 0.7745, "price": 10000},
+    "NA2O": {"label": "$Na_2O$", "factor": 0.7419, "price": 8000},
+    "K2O": {"label": "$K_2O$", "factor": 0.8302, "price": 9500},
+    "C": {"label": "Graphite (C)", "factor": 1.0, "price": 25000},
+    "AU": {"label": "Au (Gold)", "factor": 1.0, "price": 180000000},
+    "CU": {"label": "Cu (Copper)", "factor": 1.0, "price": 250000},
+    "AG": {"label": "Ag (Silver)", "factor": 1.0, "price": 2000000}
 }
 
-def clean_val(val):
-    """Zero-Error Number Extractor"""
-    if pd.isna(val) or str(val).strip() == "": return 0.0
-    s = str(val).lower()
-    if any(x in s for x in ['trace', '<', 'n.d', 'nil', 'nd']): return 0.0
-    # Use regex to find only digits and decimals
-    match = re.search(r"[-+]?\d*\.\d+|\d+", s)
-    return float(match.group()) if match else 0.0
+# --- HELPER FUNCTIONS ---
+def create_pdf(val_data, total_value):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Times", 'B', 16)
+    pdf.cell(0, 10, "Thamani Mineral Analysis Report", ln=True, align='C')
+    pdf.ln(10)
+    
+    pdf.set_font("Times", 'B', 11)
+    pdf.cell(50, 10, "Mineral", 1)
+    pdf.cell(35, 10, "Oxide %", 1)
+    pdf.cell(35, 10, "Element %", 1)
+    pdf.cell(60, 10, "Value (TZS/MT)", 1)
+    pdf.ln()
+    
+    pdf.set_font("Times", '', 10)
+    for item in val_data:
+        clean_name = item['Mineral'].replace('$', '')
+        pdf.cell(50, 10, clean_name, 1)
+        pdf.cell(35, 10, f"{item['Oxide %']:.2f}", 1)
+        pdf.cell(35, 10, f"{item['Element %']:.2f}", 1)
+        pdf.cell(60, 10, f"{item['Value (TZS/MT)']:,.2f}", 1)
+        pdf.ln()
+    
+    pdf.ln(5)
+    pdf.set_font("Times", 'B', 12)
+    pdf.cell(0, 10, f"TOTAL MARKET VALUE: {total_value:,.2f} TZS/MT", ln=True)
+    return pdf.output(dest='S').encode('latin-1')
 
-
-
-# --- 2. PAGE NAVIGATION SETUP ---
+# --- UI SETUP ---
 st.set_page_config(page_title="Thamani Analytics", layout="wide")
-
-# Sidebar Menu
 st.sidebar.title("💎 Thamani Menu")
 page = st.sidebar.radio("Go to:", ["Welcome Home", "Mineral Scanner"])
 
-# --- 3. PAGE 1: WELCOME HOME ---
 if page == "Welcome Home":
+    st.title("🔬 Thamani Mineral Analytics")
+    st.markdown("### Bridging Laboratory Science and Market Value")
+    st.write("Convert laboratory oxide results into stoichiometric element values and market pricing instantly.")
+    st.info("👈 Use the sidebar menu to open the **Mineral Scanner**.")
+
+elif page == "Mineral Scanner":
+    st.title("📊 Mineral Scanner & Valuation")
+    file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
+
+    if file:
+        extracted = {}
+        try:
+            if file.name.endswith('.pdf'):
+                with pdfplumber.open(file) as pdf:
+                    full_content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()])
+            else:
+                df = pd.read_excel(file).astype(str)
+                full_content = " ".join(df.values.flatten())
+
+            search_text = full_content.upper().replace(" ", "")
+
+            for key in CHEMICAL_MAP.keys():
+                pattern = rf"{key}.*?(\d+\.?\d*)"
+                match = re.search(pattern, search_text)
+                if match:
+                    extracted[key] = float(match.group(1))
+
+            if extracted:
+                val_data = []
+                total_value = 0
+                for k, v in extracted.items():
+                    m = CHEMICAL_MAP[k]
+                    e_pct = v * m['factor']
+                    price_val = e_pct * m['price']
+                    
+                    val_data.append({
+                        "Mineral": m['label'],
+                        "Oxide %": v,
+                        "Element %": e_pct,
+                        "Value (TZS/MT)": price_val
+                    })
+                    total_value += price_val
+
+                st.write("### Analysis Results")
+                st.dataframe(pd.DataFrame(val_data), use_container_width=True)
+                st.metric("Estimated Total Value", f"{total_value:,.2f} TZS/MT")
+                
+                report_pdf = create_pdf(val_data, total_value)
+                st.download_button(
+                    label="Download Analysis PDF",
+                    data=report_pdf,
+                    file_name="Thamani_Valuation_Report.pdf",
+                    mime="application/pdf"
+                )
+            else:
+                st.warning("No minerals recognized. Ensure the file contains labels like SIO2, FE2O3, etc.")
+
+        except Exception as e:
+            st.error(f"Error during processing: {e}")
+
     st.title("🔬 Thamani Mineral Analytics")
     st.markdown("""
     ### Welcome to the **Thamani Digital Lab**.
@@ -75,7 +145,32 @@ elif page == "Mineral Scanner":
 
     if file:
         extracted = {}
+        # Use .get() to avoid crashes if a key is missing
+        for key, oxide_pct in extracted.items():
+            meta = CHEMICAL_MAP.get(key)
+    if meta:
+        element_pct = oxide_pct * meta['factor']
+        # ... rest of your math
         
+                # Calculation Logic
+        val_data = []
+        total_value = 0
+        for key, oxide_pct in extracted.items():
+            meta = CHEMICAL_MAP[key]
+            e_pct = oxide_pct * meta['factor']
+            m_val = e_pct * meta['price']
+            val_data.append({
+                "Mineral": meta['label'],
+                "Oxide %": oxide_pct,
+                "Element %": round(e_pct, 4),
+                "Value (TZS/MT)": round(m_val, 2)
+            })
+            total_value += m_val
+
+        # Display Results
+        st.table(pd.DataFrame(val_data))
+        st.metric("Total Value", f"{total_value:,.2f} TZS/MT")
+    
         # --- IF PDF ---
         if file.name.endswith('.pdf'):
             reader = pypdf.PdfReader(file)

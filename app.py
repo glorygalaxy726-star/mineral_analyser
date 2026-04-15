@@ -52,7 +52,7 @@ if page == "Welcome Home":
     st.markdown("""
     ### Welcome to the **Thamani Digital Lab**.
     
-    This tool is designed for chemists and mineral traders in Tanzania and world in general to quickly convert laboratory oxide results into 
+    This tool is designed for chemists,miners and mineral traders in Tanzania and world in general to quickly convert laboratory oxide results into 
     marketable element values.This tool bridges the gap between **Laboratory Science** and **Market Value** for the Tanzanian mining sector.
     
     **What you can do here:**

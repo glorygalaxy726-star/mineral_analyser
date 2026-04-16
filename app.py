@@ -204,7 +204,8 @@ else:
                    for key in CHEMICAL_MAP.keys():
                        pattern = rf"{key}.*?(\d+\.?\d*)"
                        match = re.search(pattern, search_text)
-                       if match: extracted[key] = float(match.group(1))
+                       if match: 
+                           extracted[key] = float(match.group(1))
                else:
                    df = pd.read_excel(file).astype(str)
                    for r in range(len(df)):

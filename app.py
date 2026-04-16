@@ -103,14 +103,74 @@ def save_analysis(miner, mineral, purity, lat, lon):
 st.set_page_config(page_title="Thamani Analytics", layout="wide")
 init_db()
 
-# Initialize Session State
-if "page" not in st.session_state:
-    st.session_state.page = "Welcome Home"
-if "auth_mode" not in st.session_state:
-    st.session_state.auth_mode = "Login"
+import streamlit as st
 
-st.sidebar.title("💎 Menu")
-nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani mineral Analytics", "Security Gate"])
+# 1. DATABASE INITIALIZATION
+# This 'user_db' stays active as long as the app tab is open.
+if "user_db" not in st.session_state:
+    # Format: {"username": "password"}
+    st.session_state.user_db = {"admin": "1234"} 
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "current_user" not in st.session_state:
+    st.session_state.current_user = ""
+
+# --- STEP 1: AUTHENTICATION CHECK ---
+# If the user is NOT logged in, we only show the Security Gate
+if not st.session_state.logged_in:
+    st.title("🔐 Thamani Security Gate")
+    
+    auth_choice = st.radio("Select Action", ["Login", "Register"], horizontal=True)
+
+    # --- REGISTRATION SECTION ---
+    if auth_choice == "Register":
+        st.subheader("📝 Create New Account")
+        reg_user = st.text_input("Choose a Username")
+        reg_pw = st.text_input("Choose a Password", type="password")
+        reg_phone = st.text_input("Phone Number")
+        
+        if st.button("CREATE ACCOUNT"):
+            if reg_user in st.session_state.user_db:
+                st.error("This username is already taken. Please login.")
+            elif reg_user == "" or reg_pw == "":
+                st.warning("Username and Password cannot be empty.")
+            else:
+                # THIS IS WHERE THE STORAGE HAPPENS:
+                st.session_state.user_db[reg_user] = reg_pw
+                st.success(f"Account created for {reg_user}! Now switch to 'Login' to enter.")
+
+    # --- LOGIN SECTION ---
+    else:
+        st.subheader("🔑 User Login")
+        login_user = st.text_input("Username")
+        login_pw = st.text_input("Password", type="password")
+        
+        if st.button("LOG IN"):
+            # CHECKING THE STORED DATA:
+            if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
+                st.session_state.logged_in = True
+                st.session_state.current_user = login_user
+                st.success(f"Access Granted! Welcome {login_user}")
+                st.rerun() # This reloads the app to show the sidebar
+            else:
+                st.error("Invalid Username or Password. Please register if you haven't.")
+
+    st.divider()
+    st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+
+# --- STEP 2: AUTHORIZED ACCESS ---
+# This part only runs if st.session_state.logged_in is True
+else:
+    # 💎 Now the Sidebar Menu appears!
+    st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
+    nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
+    
+    if st.sidebar.button("Logout"):
+        st.session_state.logged_in = False
+        st.rerun()
+        st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: WELCOME HOME ---
 if nav_selection == "Welcome Home":
@@ -125,22 +185,6 @@ if nav_selection == "Welcome Home":
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
-# --- PAGE: SECURITY GATE (Auth Logic) ---
-elif nav_selection == "Security Gate":
-    auth_choice = st.radio("Access Type", ["Login", "Register"], horizontal=True)
-    
-    if auth_choice == "Login":
-        user = st.text_input("Username")
-        pw = st.text_input("Password", type="password")
-        if st.button("LOG IN"):
-            st.success(f"Access Granted. Welcome {user}!")
-    else:
-        st.subheader("New Registration")
-        new_user = st.text_input("Full Name")
-        new_phone = st.text_input("Phone Number")
-        if st.button("CREATE ACCOUNT"):
-            st.success("Account created successfully!")
-            st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 
 # --- PAGE: Thamani mineral Analytics (Main Logic) ---
@@ -206,5 +250,3 @@ elif nav_selection == "Thamani Analytics":
 
         except Exception as e:
             st.error(f"Error during processing: {e}")
-
-

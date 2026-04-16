@@ -230,21 +230,21 @@ else:
                        })
                        total_value += price_val
 
-                  # UI Output
-                  st.write("###Results")
-                  st.table(pd.DataFrame(val_data)) # st.table makes the subscripts look good
-                  st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
+                   # UI Output
+                   st.write("###Results")
+                   st.table(pd.DataFrame(val_data)) # st.table makes the subscripts look good
+                   st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
-                  # Step 4: PDF Generation
-                  report_pdf_bytes = create_pdf(val_data, total_value)
-                  st.download_button(
-                      label="📥 Download PDF Report",
-                      data=report_pdf_bytes,
-                      file_name="Thamani_analytics_Report.pdf",
-                      mime="application/pdf"
-                  )
-              else:
-                  st.warning("No minerals recognized. Check file format.")
+                   # Step 4: PDF Generation
+                   report_pdf_bytes = create_pdf(val_data, total_value)
+                   st.download_button(
+                       label="📥 Download PDF Report",
+                       data=report_pdf_bytes,
+                       file_name="Thamani_analytics_Report.pdf",
+                       mime="application/pdf"
+                   )
+               else:
+                   st.warning("No minerals recognized. Check file format.")
 
-          except Exception as e:
-              st.error(f"Error during processing: {e}")
+           except Exception as e:
+               st.error(f"Error during processing: {e}")

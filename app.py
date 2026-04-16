@@ -100,10 +100,8 @@ def save_analysis(miner, mineral, purity, lat, lon):
 # 3. STREAMLIT UI & NAVIGATION
 # ==========================================
 
-st.set_page_config(page_title="Thamani Analytics", layout="wide")
+st.set_page_config(page_title="Thamani mineral Analytics", layout="wide")
 init_db()
-
-import streamlit as st
 
 # 1. DATABASE INITIALIZATION
 # This 'user_db' stays active as long as the app tab is open.
@@ -181,7 +179,7 @@ if nav_selection == "Welcome Home":
     * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
     * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
     """)
-    st.info("👈 Select **Mineral Scanner** in the sidebar to begin.")
+    st.info("👈 Select **Thamani Mineral analytics** in the sidebar to begin.")
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 

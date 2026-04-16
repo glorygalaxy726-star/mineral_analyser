@@ -53,37 +53,34 @@ def clean_val(val):
     return float(match.group()) if match else 0.0
 
 def create_pdf(val_data, total_value):
-    """Generates PDF and returns bytes (Fixes Bytearray error)"""
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Times", 'B', 16)
-    pdf.cell(0, 10, "Thamani Mineral Analysis Report", ln=True, align='C')
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "MINERAL ANALYSIS REPORT", ln=True, align='C')
     pdf.ln(10)
     
     # Table Header
-    pdf.set_font("Times", 'B', 11)
-    pdf.cell(50, 10, "Mineral", 1)
-    pdf.cell(35, 10, "Oxide %", 1)
-    pdf.cell(35, 10, "Element %", 1)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(60, 10, "Mineral", 1)
+    pdf.cell(60, 10, "Oxide %", 1)
     pdf.cell(60, 10, "Value (TZS/MT)", 1)
     pdf.ln()
-    
-    # Table Content
-    pdf.set_font("Times", '', 10)
+
+    # Table Body
+    pdf.set_font("Arial", '', 12)
     for item in val_data:
-        # Removes LaTeX symbols for PDF compatibility
-        clean_name = item['Mineral'].replace('$', '').replace('_', '')
-        pdf.cell(50, 10, clean_name, 1)
-        pdf.cell(35, 10, f"{item['Oxide %']:.2f}", 1)
-        pdf.cell(35, 10, f"{item['Element %']:.4f}", 1)
+        # Clean the LaTeX symbols ($ and _) for PDF
+        name = str(item['Mineral']).replace('$', '').replace('_', '')
+        pdf.cell(60, 10, name, 1)
+        pdf.cell(60, 10, str(item['Oxide %']), 1)
         pdf.cell(60, 10, f"{item['Value (TZS/MT)']:,.2f}", 1)
         pdf.ln()
-    
-    pdf.ln(5)
-    pdf.set_font("Times", 'B', 12)
+
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
     pdf.cell(0, 10, f"TOTAL MARKET VALUE: {total_value:,.2f} TZS/MT", ln=True)
     
-    # CRITICAL: Convert output to bytes for Streamlit
+    # CRITICAL: Convert to bytes to prevent binary errors
     return bytes(pdf.output(dest='S'))
 
 def save_analysis(miner, mineral, purity, lat, lon):
@@ -209,4 +206,5 @@ elif nav_selection == "Thamani Analytics":
 
         except Exception as e:
             st.error(f"Error during processing: {e}")
+
 

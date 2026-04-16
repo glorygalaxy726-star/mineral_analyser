@@ -247,4 +247,4 @@ else:
                    st.warning("No minerals recognized. Check file format.")
 
            except Exception as e:
-               st.error(f"Error during processing: {e}")
+            st.error(f"Error during processing: {e}")

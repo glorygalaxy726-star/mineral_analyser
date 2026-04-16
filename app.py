@@ -187,65 +187,63 @@ else:
         st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: Thamani mineral Analytics (Main Logic) ---
-elif nav_selection == "Thamani Analytics":
-    st.title("Thamani mineral Analytics")
-    file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
-    st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+    elif nav_selection == "Thamani Analytics":
+        st.title("Thamani mineral Analytics")
+        file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
+        st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 
-    if file:
-        extracted = {}
-        try:
-            # Step 1: Data Extraction
-            if file.name.endswith('.pdf'):
-                with pdfplumber.open(file) as pdf:
-                    content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()]) 
-                search_text = content.upper().replace(" ", "")
-                for key in CHEMICAL_MAP.keys():
-                    pattern = rf"{key}.*?(\d+\.?\d*)"
-                    match = re.search(pattern, search_text)
-                    if match:
-                        extracted[key] = float(match.group(1))
-            else:
-                df = pd.read_excel(file).astype(str)
-                for r in range(len(df)):
-                    for c in range(len(df.columns)):
-                        cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
-                        if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
-                            extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
+        if file:
+            extracted = {}
+            try:
+               # Step 1: Data Extraction
+               if file.name.endswith('.pdf'):
+                   with pdfplumber.open(file) as pdf:
+                       content = " ".join([p.extract_text() for p in pdf.pages if p.extract_text()]) 
+                   search_text = content.upper().replace(" ", "")
+                   for key in CHEMICAL_MAP.keys():
+                       pattern = rf"{key}.*?(\d+\.?\d*)"
+                       match = re.search(pattern, search_text)
+                       if match: extracted[key] = float(match.group(1))
+              else:
+                  df = pd.read_excel(file).astype(str)
+                  for r in range(len(df)):
+                      for c in range(len(df.columns)):
+                          cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
+                          if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
+                             extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
 
-            # Step 2: Math & Display
-            if extracted:
-                val_data = []
-                total_value = 0
-                for k, v in extracted.items():
-                    m = CHEMICAL_MAP[k]
-                    e_pct = v * m['factor']
-                    price_val = e_pct * m['price'] 
-                    
-                    val_data.append({
-                        "Mineral": m['label'],
-                        "Oxide %": round(v, 2),
-                        "Element %": round(e_pct, 4),
-                        "Value (TZS/MT)": round(price_val, 2) 
-                    })
-                    total_value += price_val
+              # Step 2: Math & Display
+              if extracted:
+                  val_data = []
+                  total_value = 0
+                  for k, v in extracted.items():
+                      m = CHEMICAL_MAP[k]
+                      e_pct = v * m['factor']
+                      price_val = e_pct * m['price'] 
+                      val_data.append({
+                          "Mineral": m['label'],
+                          "Oxide %": round(v, 2),
+                          "Element %": round(e_pct, 4),
+                          "Value (TZS/MT)": round(price_val, 2) 
+                      })
+                      total_value += price_val
 
-                # UI Output
-                st.write("###Results")
-                st.table(pd.DataFrame(val_data)) # st.table makes the subscripts look good
-                st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
+                  # UI Output
+                  st.write("###Results")
+                  st.table(pd.DataFrame(val_data)) # st.table makes the subscripts look good
+                  st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
-                # Step 4: PDF Generation
-                report_pdf_bytes = create_pdf(val_data, total_value)
-                st.download_button(
-                    label="📥 Download PDF Report",
-                    data=report_pdf_bytes,
-                    file_name="Thamani_analytics_Report.pdf",
-                    mime="application/pdf"
-                )
-            else:
-                st.warning("No minerals recognized. Check file format.")
+                  # Step 4: PDF Generation
+                  report_pdf_bytes = create_pdf(val_data, total_value)
+                  st.download_button(
+                      label="📥 Download PDF Report",
+                      data=report_pdf_bytes,
+                      file_name="Thamani_analytics_Report.pdf",
+                      mime="application/pdf"
+                  )
+              else:
+                  st.warning("No minerals recognized. Check file format.")
 
-        except Exception as e:
-            st.error(f"Error during processing: {e}")
+          except Exception as e:
+              st.error(f"Error during processing: {e}")

@@ -205,13 +205,13 @@ else:
                        pattern = rf"{key}.*?(\d+\.?\d*)"
                        match = re.search(pattern, search_text)
                        if match: extracted[key] = float(match.group(1))
-              else:
-                  df = pd.read_excel(file).astype(str)
-                  for r in range(len(df)):
-                      for c in range(len(df.columns)):
-                          cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
-                          if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
-                             extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
+               else:
+                   df = pd.read_excel(file).astype(str)
+                   for r in range(len(df)):
+                       for c in range(len(df.columns)):
+                           cell_txt = str(df.iloc[r, c]).strip().upper().replace(" ", "")
+                           if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
+                              extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
 
               # Step 2: Math & Display
               if extracted:

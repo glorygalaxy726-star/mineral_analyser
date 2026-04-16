@@ -4,3 +4,8 @@ openpyxl
 pypdf
 pdfplumber
 fpdf2
+sqlite3
+pandas as pd
+hashlib
+datetime
+datetime

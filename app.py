@@ -214,21 +214,21 @@ else:
                            if cell_txt in CHEMICAL_MAP and c + 1 < len(df.columns):
                               extracted[cell_txt] = clean_val(df.iloc[r, c + 1])
 
-              # Step 2: Math & Display
-              if extracted:
-                  val_data = []
-                  total_value = 0
-                  for k, v in extracted.items():
-                      m = CHEMICAL_MAP[k]
-                      e_pct = v * m['factor']
-                      price_val = e_pct * m['price'] 
-                      val_data.append({
-                          "Mineral": m['label'],
-                          "Oxide %": round(v, 2),
-                          "Element %": round(e_pct, 4),
-                          "Value (TZS/MT)": round(price_val, 2) 
-                      })
-                      total_value += price_val
+                # Step 2: Math & Display
+               if extracted:
+                   val_data = []
+                   total_value = 0
+                   for k, v in extracted.items():
+                       m = CHEMICAL_MAP[k]
+                       e_pct = v * m['factor']
+                       price_val = e_pct * m['price'] 
+                       val_data.append({
+                           "Mineral": m['label'],
+                           "Oxide %": round(v, 2),
+                           "Element %": round(e_pct, 4),
+                           "Value (TZS/MT)": round(price_val, 2) 
+                       })
+                       total_value += price_val
 
                   # UI Output
                   st.write("###Results")

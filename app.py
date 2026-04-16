@@ -171,19 +171,20 @@ else:
         st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: WELCOME HOME ---
-if nav_selection == "Welcome Home":
-    st.title("🔬 Thamani Mineral Analytics")
-    st.markdown("""
-    ### Welcome to the **Thamani Digital Lab**.
-    * ⚡ **Auto-Extract:** Read Excel and PDF reports.
-    * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
-    * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
-    """)
-    st.info("👈 Select **Thamani Mineral analytics** in the sidebar to begin.")
-    st.divider()
-    st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
-
-
+    if nav_selection == "Welcome Home":
+        st.title("🔬 Thamani Mineral Analytics")
+        st.markdown("""
+        ### Welcome to the **Thamani Digital Lab**.
+        
+        * ⚡ **Auto-Extract:** Read Excel and PDF reports.
+        
+        * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
+        
+        * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
+        """)
+        st.info("👈 Select **Thamani Mineral analytics** in the sidebar to begin.")
+        st.divider()
+        st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: Thamani mineral Analytics (Main Logic) ---
 elif nav_selection == "Thamani Analytics":

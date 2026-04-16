@@ -208,7 +208,12 @@ elif page == "Mineral Scanner":
 
         except Exception as e:
             st.error(f"Error during processing: {e}")
-            # ==========================================
+import sqlite3
+import pandas as pd
+import random
+import hashlib
+from datetime import datetime
+# ==========================================
 # 1. BACK-END: DATABASE & SECURITY ENGINES
 # ==========================================
 

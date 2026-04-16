@@ -52,7 +52,7 @@ def create_pdf(val_data, total_value):
     # Table Content
     pdf.set_font("Times", '', 10)
     for item in val_data:
-        clean_name = item['Mineral'].replace('$', '')
+        clean_name = item['Mineral'].replace('$', '').replace('_', '')
         pdf.cell(50, 10, clean_name, 1)
         pdf.cell(35, 10, f"{item['Oxide %']:.2f}", 1)
         pdf.cell(35, 10, f"{item['Element %']:.2f}", 1)

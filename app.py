@@ -125,8 +125,8 @@ if not st.session_state.logged_in:
     # --- REGISTRATION SECTION ---
     if auth_choice == "Register":
         st.subheader("📝 Create New Account")
-        reg_user = st.text_input("Choose a Username")
-        reg_pw = st.text_input("Choose a Password", type="password")
+        reg_user = st.text_input("input Username")
+        reg_pw = st.text_input("Choose Password", type="password")
         reg_phone = st.text_input("Phone Number")
         
         if st.button("CREATE ACCOUNT"):
@@ -136,8 +136,9 @@ if not st.session_state.logged_in:
                 st.warning("Username and Password cannot be empty.")
             else:
                 # THIS IS WHERE THE STORAGE HAPPENS:
-                st.session_state.user_db[reg_user] = reg_pw
-                st.success(f"Account created for {reg_user}! Now switch to 'Login' to enter.")
+                reg_user = st.text_input("Input Username", key="reg_user_input")
+                reg_pw = st.text_input("Choose Password", type="password", key="reg_pw_input")
+                st.rerun() 'Now switch to 'Login' to enter.'
 
     # --- LOGIN SECTION ---
     else:
@@ -148,9 +149,11 @@ if not st.session_state.logged_in:
         if st.button("LOG IN"):
             # CHECKING THE STORED DATA:
             if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
+                login_user = st.text_input("Username", key="login_user_input")
+                login_pw = st.text_input("Password", type="password", key="login_pw_input")
                 st.session_state.logged_in = True
-                st.session_state.current_user = login_user
-                st.success(f"Access Granted! Welcome {login_user}")
+                st.session_state.current_user = login_user_input
+                st.success(f"Access Granted! Welcome {login_user_input}")
                 st.rerun() # This reloads the app to show the sidebar
             else:
                 st.error("Invalid Username or Password. Please register if you haven't.")

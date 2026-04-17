@@ -140,20 +140,20 @@ if st.button("CREATE ACCOUNT"):
         st.success("Account created!You can now switch to 'Login' to enter the system.")
         st.rerun()
     # --- LOGIN SECTION ---
-    else:
-        st.subheader("🔑 User Login")
-        login_user = st.text_input("Username", key="login_user_input")
-        login_pw = st.text_input("Password", type="password", key="login_pw_input")
+else:
+    st.subheader("🔑 User Login")
+    login_user = st.text_input("Username", key="login_user_input")
+    login_pw = st.text_input("Password", type="password", key="login_pw_input")
         
-        if st.button("LOG IN"):
+    if st.button("LOG IN"):
             # CHECKING THE STORED DATA
-            if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
-                st.session_state.logged_in = True
-                st.session_state.current_user = login_user
-                st.success(f"Access Granted! Welcome {login_user}")
-                st.rerun() 
-            else:
-                st.error("Invalid Username or Password. Please register if you haven't.")
+         if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
+            st.session_state.logged_in = True
+            st.session_state.current_user = login_user
+            st.success(f"Access Granted! Welcome {login_user}")
+            st.rerun() 
+        else:
+            st.error("Invalid Username or Password. Please register if you haven't.")
 
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")

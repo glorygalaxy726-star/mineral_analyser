@@ -138,7 +138,14 @@ if not st.session_state.logged_in:
                 # THIS IS WHERE THE STORAGE HAPPENS:
                 reg_user = st.text_input("Input Username", key="reg_user_input")
                 reg_pw = st.text_input("Choose Password", type="password", key="reg_pw_input")
-                st.rerun() 'Now switch to 'Login' to enter.'
+                # Save the user
+                st.session_state.user_db[reg_user] = reg_pw
+                
+                # The corrected message
+                st.success(f"Account created! You can now switch to 'Login' to enter the system.")
+                
+                # Refresh so the Login side is ready
+                st.rerun() 
 
     # --- LOGIN SECTION ---
     else:

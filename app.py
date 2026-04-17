@@ -125,18 +125,20 @@ if not st.session_state.logged_in:
         reg_user = st.text_input("Input Username", key="reg_user_input")
         reg_pw = st.text_input("Choose Password", type="password", key="reg_pw_input")
         reg_phone = st.text_input("Phone Number")
-        
-        if st.button("CREATE ACCOUNT"):
-            if reg_user in st.session_state.user_db:
-                st.error("This username is already taken. Please login.")
-            elif reg_user == "" or reg_pw == "":
-                st.warning("Username and Password cannot be empty.")
-            else:
-                # Storage happens here
-                st.session_state.user_db[reg_user] = reg_pw
-                st.success(f"Account created! You can now switch to 'Login' to enter the system.")
-                st.rerun() 
+        # 1. Define inputs OUTSIDE the button check
+reg_user = st.text_input("Input Username", key="reg_user")
+reg_pw = st.text_input("Choose Password", type="password", key="reg_pw")
 
+# 2. The button only handles the logic
+if st.button("CREATE ACCOUNT"):
+    if reg_user in st.session_state.user_db:
+        st.error("This username is already taken.")
+    elif reg_user == "":
+        st.warning("Username cannot be empty.")
+    else:
+        st.session_state.user_db[reg_user] = reg_pw
+        st.success("Account created!You can now switch to 'Login' to enter the system.")
+        st.rerun()
     # --- LOGIN SECTION ---
     else:
         st.subheader("🔑 User Login")

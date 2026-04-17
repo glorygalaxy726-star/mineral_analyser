@@ -157,31 +157,31 @@ else:
 
      st.divider()
      st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
-# --- STEP 2: AUTHORIZED ACCESS ---
-# This part only runs if st.session_state.logged_in is True
-else:
-    # 💎 Now the Sidebar Menu appears!
-    st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
-    nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
+  # --- STEP 2: AUTHORIZED ACCESS ---
+  # This part only runs if st.session_state.logged_in is True
+    else:
+       # 💎 Now the Sidebar Menu appears!
+        st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
+        nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
     
-    if st.sidebar.button("Logout"):
-       st.session_state.logged_in = False
-       st.rerun()
-       st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+       if st.sidebar.button("Logout"):
+          st.session_state.logged_in = False
+          st.rerun()
+          st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: WELCOME HOME ---
-      if nav_selection == "Welcome Home":
-         st.title("🔬 Thamani Mineral Analytics")
-         st.markdown("""
-         ### Welcome to the **Thamani Digital Lab**.
+         if nav_selection == "Welcome Home":
+            st.title("🔬 Thamani Mineral Analytics")
+            st.markdown("""
+            ### Welcome to the **Thamani Digital Lab**.
         
-         * ⚡ **Auto-Extract:** Read Excel and PDF reports.
+            * ⚡ **Auto-Extract:** Read Excel and PDF reports.
         
-         * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
+            * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
         
-         * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
-         """)
-         st.info("👈 Select **Thamani Mineral analytics** in the sidebar to begin.")
+            * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
+             """)
+            st.info("👈 Select **Thamani Mineral analytics** in the sidebar to begin.")
          st.divider()
          st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 

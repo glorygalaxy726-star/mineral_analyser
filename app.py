@@ -92,21 +92,27 @@ if "current_user" not in st.session_state:
 if not st.session_state.logged_in:
     st.title("🔐 Thamani Security Gate")
     auth_choice = st.radio("Select Action", ["Login", "Register"], horizontal=True)
-
+    # --- REGISTRATION SECTION ---
     if auth_choice == "Register":
         st.subheader("📝 Create New Account")
+        
+        # 1. These variables capture the data BEFORE the click
         reg_user = st.text_input("Input Username", key="reg_user")
         reg_pw = st.text_input("Choose Password", type="password", key="reg_pw")
         reg_phone = st.text_input("Phone Number", key="reg_phone")
         
+        # 2. This button only runs AFTER the variables above are filled
         if st.button("CREATE ACCOUNT"):
             if reg_user in st.session_state.user_db:
                 st.error("This username is already taken.")
             elif reg_user == "":
                 st.warning("Username cannot be empty.")
             else:
+                # Store the data in the dictionary
                 st.session_state.user_db[reg_user] = reg_pw
                 st.success("Account created! You can now switch to 'Login' to enter the system.")
+                
+                # CRITICAL: This saves the data to memory and refreshes the page
                 st.rerun()
 
     else:

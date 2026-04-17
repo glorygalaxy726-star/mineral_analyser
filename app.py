@@ -104,9 +104,7 @@ st.set_page_config(page_title="Thamani mineral Analytics", layout="wide")
 init_db()
 
 # 1. DATABASE INITIALIZATION
-# This 'user_db' stays active as long as the app tab is open.
 if "user_db" not in st.session_state:
-    # Format: {"username": "password"}
     st.session_state.user_db = {"admin": "1234"} 
 
 if "logged_in" not in st.session_state:
@@ -116,7 +114,6 @@ if "current_user" not in st.session_state:
     st.session_state.current_user = ""
 
 # --- STEP 1: AUTHENTICATION CHECK ---
-# If the user is NOT logged in, we only show the Security Gate
 if not st.session_state.logged_in:
     st.title("🔐 Thamani Security Gate")
     
@@ -125,8 +122,8 @@ if not st.session_state.logged_in:
     # --- REGISTRATION SECTION ---
     if auth_choice == "Register":
         st.subheader("📝 Create New Account")
-        reg_user = st.text_input("input Username")
-        reg_pw = st.text_input("Choose Password", type="password")
+        reg_user = st.text_input("Input Username", key="reg_user_input")
+        reg_pw = st.text_input("Choose Password", type="password", key="reg_pw_input")
         reg_phone = st.text_input("Phone Number")
         
         if st.button("CREATE ACCOUNT"):
@@ -135,39 +132,29 @@ if not st.session_state.logged_in:
             elif reg_user == "" or reg_pw == "":
                 st.warning("Username and Password cannot be empty.")
             else:
-                # THIS IS WHERE THE STORAGE HAPPENS:
-                reg_user = st.text_input("Input Username", key="reg_user_input")
-                reg_pw = st.text_input("Choose Password", type="password", key="reg_pw_input")
-                # Save the user
+                # Storage happens here
                 st.session_state.user_db[reg_user] = reg_pw
-                
-                # The corrected message
                 st.success(f"Account created! You can now switch to 'Login' to enter the system.")
-                
-                # Refresh so the Login side is ready
                 st.rerun() 
 
     # --- LOGIN SECTION ---
     else:
         st.subheader("🔑 User Login")
-        login_user = st.text_input("Username")
-        login_pw = st.text_input("Password", type="password")
+        login_user = st.text_input("Username", key="login_user_input")
+        login_pw = st.text_input("Password", type="password", key="login_pw_input")
         
         if st.button("LOG IN"):
-            # CHECKING THE STORED DATA:
+            # CHECKING THE STORED DATA
             if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
-                login_user = st.text_input("Username", key="login_user_input")
-                login_pw = st.text_input("Password", type="password", key="login_pw_input")
                 st.session_state.logged_in = True
-                st.session_state.current_user = login_user_input
-                st.success(f"Access Granted! Welcome {login_user_input}")
-                st.rerun() # This reloads the app to show the sidebar
+                st.session_state.current_user = login_user
+                st.success(f"Access Granted! Welcome {login_user}")
+                st.rerun() 
             else:
                 st.error("Invalid Username or Password. Please register if you haven't.")
 
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
-
 # --- STEP 2: AUTHORIZED ACCESS ---
 # This part only runs if st.session_state.logged_in is True
 else:

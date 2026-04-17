@@ -159,15 +159,15 @@ else:
      st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 # --- STEP 2: AUTHORIZED ACCESS ---
 # This part only runs if st.session_state.logged_in is True
-     else:
+    else:
          # 💎 Now the Sidebar Menu appears!
-         st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
-         nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
+        st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
+        nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
     
-         if st.sidebar.button("Logout"):
-            st.session_state.logged_in = False
-            st.rerun()
-            st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+        if st.sidebar.button("Logout"):
+           st.session_state.logged_in = False
+           st.rerun()
+           st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
 # --- PAGE: WELCOME HOME ---
      if nav_selection == "Welcome Home":

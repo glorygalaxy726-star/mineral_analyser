@@ -77,16 +77,19 @@ def create_pdf(val_data, total_value):
 # ==========================================
 # 3. STREAMLIT UI & NAVIGATION
 # ==========================================
-
 st.set_page_config(page_title="Thamani mineral Analytics", layout="wide")
-init_db()
+init_db()  # This creates the thamani_data.db file
 
+# Initialize Session States correctly
 if "user_db" not in st.session_state:
+    # We keep this for the 'admin' bypass, but real users go to SQLite
     st.session_state.user_db = {"admin": "1234"} 
+
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
 if "current_user" not in st.session_state:
-    st.session_state.current_user = ""
+    st.session_state.current_user = "" # <--- Fixed the empty assignment
 
 # --- STEP 1: AUTHENTICATION CHECK ---
 if not st.session_state.logged_in:

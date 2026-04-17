@@ -152,11 +152,11 @@ else:
             st.session_state.current_user = login_user
             st.success(f"Access Granted! Welcome {login_user}")
             st.rerun() 
-             else:
-                 st.error("Invalid Username or Password. Please register if you haven't.")
+              else:
+                  st.error("Invalid Username or Password. Please register if you haven't.")
 
-                 st.divider()
-                 st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+                  st.divider()
+                  st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 # --- STEP 2: AUTHORIZED ACCESS ---
 # This part only runs if st.session_state.logged_in is True
      else:

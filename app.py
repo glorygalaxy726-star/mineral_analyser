@@ -240,16 +240,16 @@ else:
                                     # --- DATA EXTRACTION ---
                     # --- SMART EXTRACTION ---
                     # This looks for all common lab names for Moisture and LOI
-                    moisture_val = extracted.get("H2O") or extracted.get("MOISTURE") or extracted.get("Moisture") or extracted.get("H2O (%)")
-                    loi_val = extracted.get("LOI") or extracted.get("Loss on Ignition") or extracted.get("LOI (%)")
+                    moisture_val = extracted.get("H2O",0) or extracted.get("MOISTURE",0) or extracted.get("Moisture",0) or extracted.get("H2O (%)",0)
+                    loi_val = extracted.get("LOI",0) or extracted.get("Loss on Ignition",0) or extracted.get("LOI (%)",0)
 
                     # Convert to float just in case the extractor caught it as a string
                     try:
                         moisture_val = float(moisture_val)
                         loi_val = float(loi_val)
                     except:
-                        moisture_val =""
-                        loi_val = ""
+                        moisture_val ="0"
+                        loi_val = "0"
             
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 

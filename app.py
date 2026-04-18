@@ -142,7 +142,9 @@ else:
     # SIDEBAR SETUP
     st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
     nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
-    
+    # In your sidebar
+    lang = st.sidebar.radio("Language / Lugha", ["English", "Kiswahili"])
+
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
         st.rerun()

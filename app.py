@@ -32,7 +32,7 @@ def init_db():
     conn = sqlite3.connect('thamani_data.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS miners 
-                 (username TEXT, phone TEXT, password TEXT, credits INTEGER)''')
+                 (username TEXT PRIMARY KEY, phone TEXT, password TEXT, credits INTEGER)''')
     c.execute('''CREATE TABLE IF NOT EXISTS history 
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                   miner_name TEXT, mineral TEXT, purity REAL, 
@@ -43,7 +43,6 @@ def init_db():
 # ==========================================
 # 2. HELPER FUNCTIONS
 # ==========================================
-
 def clean_val(val):
     if pd.isna(val) or str(val).strip() == "": return 0.0
     s = str(val).lower()
@@ -75,75 +74,72 @@ def create_pdf(val_data, total_value):
     return bytes(pdf.output(dest='S'))
 
 # ==========================================
-# 3. STREAMLIT UI & NAVIGATION
+# 3. UI INITIALIZATION
 # ==========================================
 st.set_page_config(page_title="Thamani mineral Analytics", layout="wide")
-init_db()  # This creates the thamani_data.db file
-
-# Initialize Session States correctly
-if "user_db" not in st.session_state:
-    # We keep this for the 'admin' bypass, but real users go to SQLite
-    st.session_state.user_db = {"admin": "1234"} 
+init_db()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-
 if "current_user" not in st.session_state:
-    st.session_state.current_user = "" # <--- Fixed the empty assignment
+    st.session_state.current_user = ""
 
-# --- STEP 1: AUTHENTICATION CHECK ---
+# ==========================================
+# 4. PAGE 1: SECURITY GATE (LOGIN/REGISTER)
+# ==========================================
 if not st.session_state.logged_in:
     st.title("🔐 Thamani Security Gate")
     auth_choice = st.radio("Select Action", ["Login", "Register"], horizontal=True)
-    # --- REGISTRATION SECTION ---
-if auth_choice == "Register":
-    st.subheader("📝 Create New Account")
-    reg_user = st.text_input("Username", key="reg_u")
-    reg_pw = st.text_input("Password", type="password", key="reg_p")
-    reg_phone = st.text_input("Phone Number", key="reg_ph")
 
-    if st.button("CREATE ACCOUNT"):
-        if reg_user == "" or reg_pw == "":
-            st.warning("All fields are required.")
-        else:
-            conn = sqlite3.connect('thamani_data.db')
-            c = conn.cursor()
-            
-            # Check if username already exists in SQLite
-            c.execute("SELECT * FROM miners WHERE username = ?", (reg_user,))
-            existing_user = c.fetchone()
-            
-            if existing_user:
-                st.error("This username is already taken in the database.")
+    if auth_choice == "Register":
+        st.subheader("📝 Create New Account")
+        reg_user = st.text_input("Username", key="reg_u")
+        reg_pw = st.text_input("Password", type="password", key="reg_p")
+        reg_phone = st.text_input("Phone Number", key="reg_ph")
+
+        if st.button("CREATE ACCOUNT"):
+            if reg_user == "" or reg_pw == "":
+                st.warning("Username and Password are required.")
             else:
-                # Insert into SQLite permanently
-                c.execute("INSERT INTO miners (username, password, phone, credits) VALUES (?, ?, ?, ?)", 
-                          (reg_user, reg_pw, reg_phone, 0))
-                conn.commit()
-                st.success(f"✅ {reg_user} registered permanently! Switch to Login.")
-                st.rerun()
-            conn.close()
-            
+                conn = sqlite3.connect('thamani_data.db')
+                c = conn.cursor()
+                try:
+                    c.execute("INSERT INTO miners (username, password, phone, credits) VALUES (?, ?, ?, ?)", 
+                              (reg_user, reg_pw, reg_phone, 0))
+                    conn.commit()
+                    st.success(f"✅ Account for {reg_user} created permanently! Now switch to Login.")
+                except sqlite3.IntegrityError:
+                    st.error("This username is already taken in the database.")
+                conn.close()
+
     else:
         st.subheader("🔑 User Login")
-        login_user = st.text_input("Username", key="login_user")
-        login_pw = st.text_input("Password", type="password", key="login_pw")
-        
+        login_user = st.text_input("Username", key="log_u")
+        login_pw = st.text_input("Password", type="password", key="log_p")
+
         if st.button("LOG IN"):
-            if login_user in st.session_state.user_db and st.session_state.user_db[login_user] == login_pw:
+            conn = sqlite3.connect('thamani_data.db')
+            c = conn.cursor()
+            c.execute("SELECT * FROM miners WHERE username=? AND password=?", (login_user, login_pw))
+            result = c.fetchone()
+            conn.close()
+
+            if result:
                 st.session_state.logged_in = True
                 st.session_state.current_user = login_user
-                st.success(f"Access Granted! Welcome {login_user}")
-                st.rerun() 
+                st.success("Access Granted!")
+                st.rerun()
             else:
                 st.error("Invalid Username or Password.")
 
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
-# --- STEP 2: AUTHORIZED ACCESS (The "Hidden" part) ---
-else: 
-    # EVERYTHING BELOW THIS LINE MUST BE INDENTED!
+# ==========================================
+# 5. PAGE 2: AUTHORIZED APP CONTENT
+# ==========================================
+else:
+    # SIDEBAR SETUP
     st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
     nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
     
@@ -151,26 +147,23 @@ else:
         st.session_state.logged_in = False
         st.rerun()
 
+    # --- SUB-PAGE: WELCOME HOME ---
     if nav_selection == "Welcome Home":
-        st.title("🔬 Welcome Home")
-        # Home content here...
-
-    elif nav_selection == "Thamani Mineral Analytics":
-        st.title("📊 Mineral Analytics")
-        st.markdown("""
-        ### Welcome to the **Thamani Digital Lab**.
+        st.title("🔬 Thamani Mineral Analytics")
+        st.markdown(f"""
+        ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
+        
         * ⚡ **Auto-Extract:** Read Excel and PDF reports.
         * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
         * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
         """)
         st.info("👈 Select **Thamani Mineral Analytics** in the sidebar to begin.")
-        st.divider()
-        st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
+    # --- SUB-PAGE: ANALYTICS MAIN LOGIC ---
     elif nav_selection == "Thamani Mineral Analytics":
-        st.title("📊 Thamani Mineral Analytics")
+        st.title("📊 Mineral Analytics Engine")
         file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
-        
+
         if file:
             extracted = {}
             try:
@@ -181,8 +174,7 @@ else:
                     for key in CHEMICAL_MAP.keys():
                         pattern = rf"{key}.*?(\d+\.?\d*)"
                         match = re.search(pattern, search_text)
-                        if match: 
-                            extracted[key] = float(match.group(1))
+                        if match: extracted[key] = float(match.group(1))
                 else:
                     df = pd.read_excel(file).astype(str)
                     for r in range(len(df)):
@@ -219,9 +211,10 @@ else:
                     )
                 else:
                     st.warning("No minerals recognized. Check file format.")
-
             except Exception as e:
-                st.error(f"Error during processing: {e}")
-        
-        st.divider()
-        st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+                st.error(f"Error: {e}")
+
+    # CAPTION FOR THE AUTHORIZED AREA
+    st.divider()
+    st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
+    

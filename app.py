@@ -106,13 +106,13 @@ if not st.session_state.logged_in:
         
         # 2. This button only runs AFTER the variables above are filled
         if st.button("CREATE ACCOUNT"):
-            if reg_user not in st.session_state.user_db:
+            if reg_user in st.session_state.user_db:
                 st.error("This username is already taken.")
             elif reg_user == "":
                 st.warning("Username cannot be empty.")
             else:
                 # Store the data in the dictionary
-                st.session_state.user_db[reg_user] = reg_pw
+                st.session_state.user_db[reg_user] and reg_pw=True
                 st.success("Account created! You can now switch to 'Login' to enter the system.")
                 
                 # CRITICAL: This saves the data to memory and refreshes the page

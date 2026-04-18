@@ -242,49 +242,51 @@ else:
                     # This looks for all common lab names for Moisture and LOI
                     moisture_val = extracted.get("H2O",0) or extracted.get("MOISTURE",0) or extracted.get("Moisture",0) or extracted.get("H2O (%)",0)
                     loi_val = extracted.get("LOI",0) or extracted.get("Loss on Ignition",0) or extracted.get("LOI (%)",0)
-
-                    # Convert to float just in case the extractor caught it as a string
-                    try:
-                        moisture_val = float(moisture_val)
-                        loi_val = float(loi_val)
-                    except:
-                        moisture_val ="0"
-                        loi_val = "0"
-            
+                    if moisture_val is not None:
+                        moisture_val = float(str(moisture_val).replace('%', '').strip())
+                    if loi_val is not None:
+                        loi_val = float(str(loi_val).replace('%', '').strip())
+                except Exception:
+                    # If conversion fails (e.g., it's a word, not a number), keep it as None
+                    pass
+                    
+    
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 
                     # --- MOISTURE CHECK WITH RANGES ---
-                    if moisture_val > 10.0:
-                        status = "CRITICAL / HATARI" if lang == "Kiswahili" else "CRITICAL"
-                        msg = f"⚠️ {moisture_val}%: Unyevunyevu ni mkubwa mno (>10%). Hatari ya kukatwa bei kwingi." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: Critical moisture (>10%). High risk of massive price deductions."
-                        st.error(msg)
-                    elif moisture_val > 5.0:
-                        status = "WARNING / ONYO" if lang == "Kiswahili" else "WARNING"
-                        msg = f"⚠️ {moisture_val}%: Unyevunyevu umezidi (5-10%). Uzito wa maji utakatwa kwenye malipo." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: High moisture (5-10%). Weight deductions will apply."
-                        st.warning(msg)
-                    else:
-                        msg = f"✅ {moisture_val}%: Kiwango salama (<5%)." if lang == "Kiswahili" else f"✅ {moisture_val}%: Safe range (<5%)."
-                        st.success(msg)
+                    if moisture_val is not none:
+                        if moisture_val > 10.0:
+                            status = "CRITICAL / HATARI" if lang == "Kiswahili" else "CRITICAL"
+                            msg = f"⚠️ {moisture_val}%: Unyevunyevu ni mkubwa mno (>10%). Hatari ya kukatwa bei kwingi." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: Critical moisture (>10%). High risk of massive price deductions."
+                            st.error(msg)
+                        elif moisture_val > 5.0:
+                            status = "WARNING / ONYO" if lang == "Kiswahili" else "WARNING"
+                            msg = f"⚠️ {moisture_val}%: Unyevunyevu umezidi (5-10%). Uzito wa maji utakatwa kwenye malipo." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: High moisture (5-10%). Weight deductions will apply."
+                            st.warning(msg)
+                        else:
+                            msg = f"✅ {moisture_val}%: Kiwango salama (<5%)." if lang == "Kiswahili" else f"✅ {moisture_val}%: Safe range (<5%)."
+                            st.success(msg)
 
-                    # --- LOI CHECK WITH RANGES ---
-                    if loi_val > 20.0:
-                        msg = f"⚠️ {loi_val}%: LOI ni kubwa mno (>20%). Upotezaji mkubwa wa uzito kiwandani." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Extreme LOI (>20%). Significant mass loss in furnace."
-                        st.error(msg)
-                    elif loi_val > 10.0:
-                         msg = f"⚠️ {loi_val}%: LOI ya wastani (10-20%). Tarajia faini za uchenjuaji." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Moderate LOI (10-20%). Expect processing penalties."
-                         st.warning(msg)
-                    else:
-                        msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI (<10%)." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level (<10%)."
-                        st.success(msg)
+                        # --- LOI CHECK WITH RANGES ---
+                        if loi_val is not none
+                            if loi_val > 20.0:
+                            msg = f"⚠️ {loi_val}%: LOI ni kubwa mno (>20%). Upotezaji mkubwa wa uzito kiwandani." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Extreme LOI (>20%). Significant mass loss in furnace."
+                            st.error(msg)
+                        elif loi_val > 10.0:
+                             msg = f"⚠️ {loi_val}%: LOI ya wastani (10-20%). Tarajia faini za uchenjuaji." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Moderate LOI (10-20%). Expect processing penalties."
+                             st.warning(msg)
+                        else:
+                            msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI (<10%)." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level (<10%)."
+                            st.success(msg)
 
-                        st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
+                            st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
-                        report_pdf_bytes = create_pdf(val_data, total_value)
-                        st.download_button(
-                        label="📥 Download PDF Report",
-                        data=report_pdf_bytes,
-                        file_name="Thamani_Report.pdf",
-                        mime="application/pdf"
+                            report_pdf_bytes = create_pdf(val_data, total_value)
+                            st.download_button(
+                            label="📥 Download PDF Report",
+                            data=report_pdf_bytes,
+                            file_name="Thamani_Report.pdf",
+                            mime="application/pdf"
                     )
                 else:
                     st.warning("No minerals recognized. Check file format.")

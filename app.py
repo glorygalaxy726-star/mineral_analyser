@@ -150,32 +150,54 @@ else:
         st.session_state.logged_in = False
         st.rerun()
 
-    # --- SUB-PAGE: WELCOME HOME ---
+        # --- SUB-PAGE: WELCOME HOME ---
     if nav_selection == "Welcome Home":
-        st.title("🔬 Thamani Mineral Analytics")
-       # --- Section 1: The Vision Statement ---
-        st.write("""
-       ### 💎 Thamani Vision: Bridging Science & Value
-       This is where **precision meets passion**. Building this system was driven by a single goal: 
-       to turn complex laboratory data into actionable intelligence. As a **Chemist and Digital Researcher**, 
-       I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
-       """)
+        if lang == "Kiswahili":
+            st.title("🔬 Uchambuzi wa Madini wa Thamani")
+            st.write("""
+            ### 💎 Maono ya Thamani: Kuunganisha Sayansi na Thamani
+            Hapa ndipo **usahihi unapokutana na mapenzi ya kazi**. Kujenga mfumo huu kulichochewa na lengo moja: 
+            kubadilisha data ngumu za maabara kuwa taarifa zinazofanya kazi. Kama **Mwanakemia na Mtafiti wa Kidijitali**, 
+            ninaamini kwamba thamani halisi ya madini yetu haipo ardhini tu, bali kwenye **uwazi** wa data tunazotoa.
+            """)
+        else:
+            st.title("🔬 Thamani Mineral Analytics")
+            st.write("""
+            ### 💎 Thamani Vision: Bridging Science & Value
+            This is where **precision meets passion**. Building this system was driven by a single goal: 
+            to turn complex laboratory data into actionable intelligence. As a **Chemist and Digital Researcher**, 
+            I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
+            """)
 
-        st.divider() # Adds a clean line between the vision and the welcome
+        st.divider() 
 
-# --- Section 2: The User Welcome ---
-        st.markdown(f"""
-        ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
-        * ⚡ **Auto-Extract:** Read Excel and PDF reports.
-        * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
-        * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
-        """)
-        st.info("👈 Select **Thamani Mineral Analytics** in the sidebar to begin.")
+        # --- Section 2: The User Welcome ---
+        if lang == "Kiswahili":
+            st.markdown(f"""
+            ### Karibu kwenye **Thamani Digital Lab**, {st.session_state.current_user}.
+            * ⚡ **Utoaji wa Data:** Soma ripoti za Excel na PDF moja kwa moja.
+            * 🧪 **Ubadilishaji wa Kikemia:** Badilisha 'Oxides' kwenda kwenye asilimia halisi ya madini.
+            * 💰 **Thamani ya Soko:** Kadiria thamani ya TZS kwa kila tani (Metric Ton).
+            """)
+            st.info("👈 Chagua **Thamani Mineral Analytics** kwenye menyu ya pembeni ili kuanza.")
+        else:
+            st.markdown(f"""
+            ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
+            * ⚡ **Auto-Extract:** Read Excel and PDF reports.
+            * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
+            * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.
+            """)
+            st.info("👈 Select **Thamani Mineral Analytics** in the sidebar to begin.")
 
     # --- SUB-PAGE: ANALYTICS MAIN LOGIC ---
     elif nav_selection == "Thamani Mineral Analytics":
-        st.title("📊 Mineral Analytics Engine")
-        file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
+        if lang == "Kiswahili":
+            st.title("📊 Injini ya Uchambuzi wa Madini")
+            file = st.file_uploader("Pakia Ripoti ya Maabara (Excel au PDF)", type=['xlsx', 'pdf'])
+        else:
+            st.title("📊 Mineral Analytics Engine")
+            file = st.file_uploader("Upload Lab Report (Excel or PDF)", type=['xlsx', 'pdf'])
+
 
         if file:
             extracted = {}

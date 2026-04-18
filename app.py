@@ -242,13 +242,13 @@ else:
                     # This looks for all common lab names for Moisture and LOI
                     moisture_val = extracted.get("H2O",0) or extracted.get("MOISTURE",0) or extracted.get("Moisture",0) or extracted.get("H2O (%)",0)
                     loi_val = extracted.get("LOI",0) or extracted.get("Loss on Ignition",0) or extracted.get("LOI (%)",0)
-                    if moisture_val is not None:
-                        moisture_val = float(str(moisture_val).replace('%', '').strip())
-                    if loi_val is not None:
-                        loi_val = float(str(loi_val).replace('%', '').strip())
-                except Exception:
-                    # If conversion fails (e.g., it's a word, not a number), keep it as None
-                    pass
+                        if moisture_val is not None:
+                            moisture_val = float(str(moisture_val).replace('%', '').strip())
+                        if loi_val is not None:
+                            loi_val = float(str(loi_val).replace('%', '').strip())
+                    except Exception:
+                        # If conversion fails (e.g., it's a word, not a number), keep it as None
+                        pass
                     
     
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")

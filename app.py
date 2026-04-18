@@ -240,7 +240,6 @@ else:
                                     # --- DATA EXTRACTION ---
                     # This looks for all common lab names for Moisture and LOI
                     # Initialize to None
-             except:
                     moisture_val = None
                     loi_val = None
 

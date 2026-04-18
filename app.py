@@ -255,7 +255,7 @@ else:
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 
                     # --- MOISTURE CHECK WITH RANGES ---
-                    if moisture_val is not none:
+                    if moisture_val is not None:
                         if moisture_val > 10.0:
                             status = "CRITICAL / HATARI" if lang == "Kiswahili" else "CRITICAL"
                             msg = f"⚠️ {moisture_val}%: Unyevunyevu ni mkubwa mno (>10%). Hatari ya kukatwa bei kwingi." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: Critical moisture (>10%). High risk of massive price deductions."
@@ -269,7 +269,7 @@ else:
                             st.success(msg)
 
                         # --- LOI CHECK WITH RANGES ---
-                    if loi_val is not none:
+                    if loi_val is not None:
                         if loi_val > 20.0:
                             msg = f"⚠️ {loi_val}%: LOI ni kubwa mno (>20%). Upotezaji mkubwa wa uzito kiwandani." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Extreme LOI (>20%). Significant mass loss in furnace."
                             st.error(msg)

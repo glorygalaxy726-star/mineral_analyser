@@ -256,11 +256,11 @@ else:
                             data=report_pdf_bytes,
                             file_name="Thamani_Report.pdf",
                             mime="application/pdf"
-                            )
-                  else:
-                      st.warning("No minerals recognized. Check file format.")
-               except Exception as e:
-                      st.error(f"Error: {e}")
+                    )
+                else:
+                    st.warning("No minerals recognized. Check file format.")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
     # CAPTION FOR THE AUTHORIZED AREA
     st.divider()

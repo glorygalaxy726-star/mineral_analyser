@@ -245,7 +245,6 @@ else:
 
                     # 'extracted' is the dictionary from your PDF reader
                     for key, value in extracted.items():
-                    k_upper = str(key).upper()
     
                     # Check if the text CONTAINS the keywords
                     

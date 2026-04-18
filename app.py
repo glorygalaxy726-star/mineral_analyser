@@ -243,9 +243,9 @@ else:
                     loi_val = extracted.get("LOI") or extracted.get("Loss on Ignition") or extracted.get("LOI (%)")
                     try:
                         if moisture_val is not None:
-                            moisture_val = float(str(moisture_val).replace('%', '').strip())
+                            moisture_val = float(str("moisture_val").replace('%', '').strip())
                         if loi_val is not None:
-                            loi_val = float(str(loi_val).replace('%', '').strip())
+                            loi_val = float(str("loi_val").replace('%', '').strip())
                     except Exception:
                         # If conversion fails (e.g., it's a word), keep it as None
                         pass

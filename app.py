@@ -240,17 +240,19 @@ else:
                                     # --- DATA EXTRACTION ---
                     # This looks for all common lab names for Moisture and LOI
                     # Initialize to None
-                    moisture_val = None
-                    loi_val = None
-
+                
                     # 'extracted' is the dictionary from your PDF reader
                 for key, value in extracted.items():
     
                     # Check if the text CONTAINS the keywords
                     
-                    moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0) or extracted.get("Moisture", 0)
-                    loi_val = extracted.get("LOI", 0) or extracted.get("Loss on Ignition", 0)
-
+                    try:
+                        if moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0) or extracted.get("Moisture", 0)
+                    except:moisture_val = None
+                        pass
+                        if loi_val = extracted.get("LOI", 0) or extracted.get("Loss on Ignition", 0)
+                    except:loi_val = None
+                        pass
     
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 

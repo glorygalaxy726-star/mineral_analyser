@@ -269,13 +269,13 @@ else:
                             st.success(msg)
 
                         # --- LOI CHECK WITH RANGES ---
-                        if loi_val is not none
-                            if loi_val > 20.0:
+                    if loi_val is not none
+                        if loi_val > 20.0:
                             msg = f"⚠️ {loi_val}%: LOI ni kubwa mno (>20%). Upotezaji mkubwa wa uzito kiwandani." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Extreme LOI (>20%). Significant mass loss in furnace."
                             st.error(msg)
                         elif loi_val > 10.0:
-                             msg = f"⚠️ {loi_val}%: LOI ya wastani (10-20%). Tarajia faini za uchenjuaji." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Moderate LOI (10-20%). Expect processing penalties."
-                             st.warning(msg)
+                            msg = f"⚠️ {loi_val}%: LOI ya wastani (10-20%). Tarajia faini za uchenjuaji." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Moderate LOI (10-20%). Expect processing penalties."
+                            st.warning(msg)
                         else:
                             msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI (<10%)." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level (<10%)."
                             st.success(msg)

@@ -150,6 +150,7 @@ else:
     # --- SUB-PAGE: WELCOME HOME ---
     if nav_selection == "Welcome Home":
         st.title("🔬 Thamani Mineral Analytics")
+        st.write("""Thamani Vision: Bridging Science & Value ,this is where precision meets passion. Building this system was driven by a single goal: to turn complex laboratory data into actionable intelligence. As a **Chemist and Digital Researcher**, I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
         st.markdown(f"""
         ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
         

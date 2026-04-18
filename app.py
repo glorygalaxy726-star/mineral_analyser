@@ -106,7 +106,7 @@ if not st.session_state.logged_in:
         
         # 2. This button only runs AFTER the variables above are filled
         if st.button("CREATE ACCOUNT"):
-            if reg_user in st.session_state.user_db:
+            if reg_user not in st.session_state.user_db:
                 st.error("This username is already taken.")
             elif reg_user == "":
                 st.warning("Username cannot be empty.")

@@ -236,62 +236,62 @@ else:
                     st.write("### Analysis Results")
                     st.table(pd.DataFrame(val_data))
 
-# --- 1. DATA EXTRACTION (Hunting for values) ---
-# We use a case-insensitive search to find the values in your 'extracted' dictionary
-moisture_raw = next((v for k, v in extracted.items() if "H2O" in k.upper() or "MOISTURE" in k.upper()), None)
-loi_raw = next((v for k, v in extracted.items() if "LOI" in k.upper() or "LOSS ON IGNITION" in k.upper()), None)
+                    # --- 1. DATA EXTRACTION (Hunting for values) ---
+                    # We use a case-insensitive search to find the values in your 'extracted' dictionary
+                    moisture_raw = next((v for k, v in extracted.items() if "H2O" in k.upper() or "MOISTURE" in k.upper()), None)
+                    loi_raw = next((v for k, v in extracted.items() if "LOI" in k.upper() or "LOSS ON IGNITION" in k.upper()), None)
 
-# --- 2. CONVERSION & CLEANING ---
-moisture_val = None
-loi_val = None
+                    # --- 2. CONVERSION & CLEANING ---
+                    moisture_val = None
+                    loi_val = None
 
-try:
-    if moisture_raw is not None:
-        # Removes % or spaces so we can do math
-        moisture_val = float(str(moisture_raw).replace('%', '').strip())
-except:
-    moisture_val = None
+                    try:
+                       if moisture_raw is not None:
+                           # Removes % or spaces so we can do math
+                           moisture_val = float(str(moisture_raw).replace('%', '').strip())
+                    except:
+                        moisture_val = None
 
-try:
-    if loi_raw is not None:
-        loi_val = float(str(loi_raw).replace('%', '').strip())
-except:
-    loi_val = None
+                    try:
+                       if loi_raw is not None:
+                           loi_val = float(str(loi_raw).replace('%', '').strip())
+                    except:
+                          loi_val = None
 
-# --- 3. STATUS REPORT DISPLAY ---
-st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
+                          # --- 3. STATUS REPORT DISPLAY ---
+                          st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 
-# Moisture Logic
-if moisture_val is not None:
-    if moisture_val > 5.0:
-        msg = f"⚠️ {moisture_val}%: Unyevunyevu umezidi! (<5% inatakiwa)" if lang == "Kiswahili" else f"⚠️ {moisture_val}%: High moisture level! (<5% required)"
-        st.error(msg)
-    else:
-        msg = f"✅ {moisture_val}%: Kiwango salama cha unyevunyevu." if lang == "Kiswahili" else f"✅ {moisture_val}%: Safe moisture level."
-        st.success(msg)
-else:
-    st.info("ℹ️ Moisture (H2O) data not found in file.")
+                          # Moisture Logic
+                          if moisture_val is not None:
+                              if moisture_val > 5.0:
+                                  msg = f"⚠️ {moisture_val}%: Unyevunyevu umezidi! (<5% inatakiwa)" if lang == "Kiswahili" else f"⚠️ {moisture_val}%: High moisture level! (<5% required)"
+                                  st.error(msg)
+                              else:
+                                  msg = f"✅ {moisture_val}%: Kiwango salama cha unyevunyevu." if lang == "Kiswahili" else f"✅ {moisture_val}%: Safe moisture level."
+                                  st.success(msg)
+                          else:
+                              st.info("ℹ️ Moisture (H2O) data not found in file.")
 
-# LOI Logic
-if loi_val is not None:
-    if loi_val > 10.0:
-        msg = f"⚠️ {loi_val}%: LOI ni kubwa sana! (<10% inatakiwa)" if lang == "Kiswahili" else f"⚠️ {loi_val}%: High LOI level! (<10% required)"
-        st.warning(msg)
-    else:
-        msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level."
-        st.success(msg)
-else:
-    st.info("ℹ️ Loss on Ignition (LOI) data not found in file.")
+                               # LOI Logic
+                          if loi_val is not None:
+                              if loi_val > 10.0:
+                                  msg = f"⚠️ {loi_val}%: LOI ni kubwa sana! (<10% inatakiwa)" if lang == "Kiswahili" else f"⚠️ {loi_val}%: High LOI level! (<10% required)"
+                                  st.warning(msg)
+                              else:
+                                  msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level."
+                                  st.success(msg)
+                          else:
+                              st.info("ℹ️ Loss on Ignition (LOI) data not found in file.")
 
 
-                            st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
+                              st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
-                            report_pdf_bytes = create_pdf(val_data, total_value)
-                            st.download_button(
-                            label="📥 Download PDF Report",
-                            data=report_pdf_bytes,
-                            file_name="Thamani_Report.pdf",
-                            mime="application/pdf"
+                              report_pdf_bytes = create_pdf(val_data, total_value)
+                              st.download_button(
+                              label="📥 Download PDF Report",
+                              data=report_pdf_bytes,
+                              file_name="Thamani_Report.pdf",
+                              mime="application/pdf"
                     )
                 else:
                     st.warning("No minerals recognized. Check file format.")

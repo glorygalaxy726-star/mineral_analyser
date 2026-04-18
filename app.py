@@ -144,7 +144,8 @@ else:
     nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
     # In your sidebar
     lang = st.sidebar.radio("Language / Lugha", ["English", "Kiswahili"])
-
+    st.sidebar.divider() # Adds a nice line before the logout
+    
     if st.sidebar.button("Logout"):
         st.session_state.logged_in = False
         st.rerun()

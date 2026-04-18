@@ -96,28 +96,34 @@ if not st.session_state.logged_in:
     st.title("🔐 Thamani Security Gate")
     auth_choice = st.radio("Select Action", ["Login", "Register"], horizontal=True)
     # --- REGISTRATION SECTION ---
-    if auth_choice == "Register":
-        st.subheader("📝 Create New Account")
-        
-        # 1. These variables capture the data BEFORE the click
-        reg_user = st.text_input("Input Username", key="reg_user")
-        reg_pw = st.text_input("Choose Password", type="password", key="reg_pw")
-        reg_phone = st.text_input("Phone Number", key="reg_phone")
-        
-        # 2. This button only runs AFTER the variables above are filled
-        if st.button("CREATE ACCOUNT"):
-            if reg_user in st.session_state.user_db:
-                st.error("This username is already taken.")
-            elif reg_user == "":
-                st.warning("Username cannot be empty.")
-            else:
-                # Store the data in the dictionary
-                st.session_state.user_db[reg_user] and reg_pw=True
-                st.success("Account created! You can now switch to 'Login' to enter the system.")
-                
-                # CRITICAL: This saves the data to memory and refreshes the page
-                st.rerun()
+if auth_choice == "Register":
+    st.subheader("📝 Create New Account")
+    reg_user = st.text_input("Username", key="reg_u")
+    reg_pw = st.text_input("Password", type="password", key="reg_p")
+    reg_phone = st.text_input("Phone Number", key="reg_ph")
 
+    if st.button("CREATE ACCOUNT"):
+        if reg_user == "" or reg_pw == "":
+            st.warning("All fields are required.")
+        else:
+            conn = sqlite3.connect('thamani_data.db')
+            c = conn.cursor()
+            
+            # Check if username already exists in SQLite
+            c.execute("SELECT * FROM miners WHERE username = ?", (reg_user,))
+            existing_user = c.fetchone()
+            
+            if existing_user:
+                st.error("This username is already taken in the database.")
+            else:
+                # Insert into SQLite permanently
+                c.execute("INSERT INTO miners (username, password, phone, credits) VALUES (?, ?, ?, ?)", 
+                          (reg_user, reg_pw, reg_phone, 0))
+                conn.commit()
+                st.success(f"✅ {reg_user} registered permanently! Switch to Login.")
+            
+            conn.close()
+            
     else:
         st.subheader("🔑 User Login")
         login_user = st.text_input("Username", key="login_user")

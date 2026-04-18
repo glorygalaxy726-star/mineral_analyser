@@ -158,10 +158,10 @@ else:
        I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
        """)
 
-st.divider() # Adds a clean line between the vision and the welcome
+        st.divider() # Adds a clean line between the vision and the welcome
 
 # --- Section 2: The User Welcome ---
-st.markdown(f"""
+        st.markdown(f"""
         ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
         * ⚡ **Auto-Extract:** Read Excel and PDF reports.
         * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.

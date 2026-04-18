@@ -247,9 +247,9 @@ else:
                     try:
                        moisture_val = float(moisture_val)
                        loi_val = float(loi_val)
-                   except:
-                       moisture_val = 0.0
-                       loi_val = 0.0
+                except:
+                      moisture_val = 0.0
+                      loi_val = 0.0
             
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 

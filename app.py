@@ -248,16 +248,9 @@ else:
     
                     # Check if the text CONTAINS the keywords
                     
-                    if moisture_val = extracted.get("H2O",0) or extracted.get("MOISTURE",0) or extracted.get("Moisture",0) or extracted.get("H2O (%)",0)
-                        try moisture_val is not None:
-                            moisture_val == float(str("moisture_val").replace('%', '').strip())
-                        except:
-                            pass
-                    if loi_val = extracted.get("LOI",0) or extracted.get("Loss on Ignition",0) or extracted.get("LOI (%)",0)
-                        try loi_val is not None:
-                            loi_val == float(str("loi_val").replace('%', '').strip())
-                        except:
-                            pass
+                    moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0) or extracted.get("Moisture", 0)
+                    loi_val = extracted.get("LOI", 0) or extracted.get("Loss on Ignition", 0)
+
     
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 

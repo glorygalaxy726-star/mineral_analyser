@@ -238,7 +238,6 @@ else:
                     # --- POST-PROCESSING: MOISTURE & LOI ALERTS ---
                     # We assume 'extracted' is your dictionary of results
                                     # --- DATA EXTRACTION ---
-                    # --- SMART EXTRACTION ---
                     # This looks for all common lab names for Moisture and LOI
                     moisture_val = extracted.get("H2O") or extracted.get("MOISTURE") or extracted.get("Moisture") or extracted.get("H2O (%)")
                     loi_val = extracted.get("LOI") or extracted.get("Loss on Ignition") or extracted.get("LOI (%)")
@@ -248,7 +247,7 @@ else:
                         if loi_val is not None:
                             loi_val = float(str(loi_val).replace('%', '').strip())
                     except Exception:
-                        # If conversion fails (e.g., it's a word, not a number), keep it as None
+                        # If conversion fails (e.g., it's a word), keep it as None
                         pass
                     
     

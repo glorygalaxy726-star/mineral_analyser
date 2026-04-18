@@ -245,11 +245,11 @@ else:
 
                     # Convert to float just in case the extractor caught it as a string
                     try:
-                       moisture_val = float(moisture_val)
-                       loi_val = float(loi_val)
-                except:
-                      moisture_val = 0.0
-                      loi_val = 0.0
+                        moisture_val = float(moisture_val)
+                        loi_val = float(loi_val)
+                    except:
+                        moisture_val = 0.0
+                        loi_val = 0.0
             
                     st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 

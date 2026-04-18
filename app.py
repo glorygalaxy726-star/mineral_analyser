@@ -250,13 +250,13 @@ else:
 
                             st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
-                      report_pdf_bytes = create_pdf(val_data, total_value)
-                      st.download_button(
-                      label="📥 Download PDF Report",
-                      data=report_pdf_bytes,
-                      file_name="Thamani_Report.pdf",
-                      mime="application/pdf"
-                     )
+                            report_pdf_bytes = create_pdf(val_data, total_value)
+                            st.download_button(
+                            label="📥 Download PDF Report",
+                            data=report_pdf_bytes,
+                            file_name="Thamani_Report.pdf",
+                            mime="application/pdf"
+                            )
                   else:
                       st.warning("No minerals recognized. Check file format.")
                except Exception as e:

@@ -240,11 +240,12 @@ else:
                                     # --- DATA EXTRACTION ---
                     # This looks for all common lab names for Moisture and LOI
                     # Initialize to None
+             except:
                     moisture_val = None
                     loi_val = None
 
                     # 'extracted' is the dictionary from your PDF reader
-                    for key, value in extracted.items():
+             for key, value in extracted.items():
     
                     # Check if the text CONTAINS the keywords
                     

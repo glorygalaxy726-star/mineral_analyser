@@ -244,7 +244,7 @@ else:
                     loi_val = None
 
                     # 'extracted' is the dictionary from your PDF reader
-             for key, value in extracted.items():
+                for key, value in extracted.items():
     
                     # Check if the text CONTAINS the keywords
                     

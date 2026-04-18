@@ -213,6 +213,41 @@ else:
 
                     st.write("### Analysis Results")
                     st.table(pd.DataFrame(val_data))
+                    # --- POST-PROCESSING: MOISTURE & LOI ALERTS ---
+# We assume 'extracted' is your dictionary of results
+moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0)
+loi_val = extracted.get("LOI", 0)
+
+# 🚩 Set your limits here
+MOISTURE_LIMIT = 5.0  # e.g., 5%
+LOI_LIMIT = 10.0      # e.g., 10%
+
+st.markdown("### 📋 Status Report / Ripoti ya Hali")
+
+# --- MOISTURE CHECK ---
+if moisture_val > MOISTURE_LIMIT:
+    if lang == "Kiswahili":
+        st.error(f"⚠️ **ONYO LA UNYEVUNYEVU:** Kiasi cha {moisture_val}% kimezidi kiwango! Hii itapunguza sana bei yako ya mauzo.")
+    else:
+        st.error(f"⚠️ **MOISTURE ALERT:** {moisture_val}% exceeds the limit! This will significantly reduce your net sale price.")
+else:
+    if lang == "Kiswahili":
+        st.success(f"✅ **UNYEVUNYEVU:** {moisture_val}% iko ndani ya kiwango salama.")
+    else:
+        st.success(f"✅ **MOISTURE:** {moisture_val}% is within acceptable limits.")
+
+# --- LOI CHECK ---
+if loi_val > LOI_LIMIT:
+    if lang == "Kiswahili":
+        st.warning(f"⚠️ **ONYO LA LOI:** Uzito unaopotea kwa moto ({loi_val}%) ni mkubwa. Unaweza kutozwa faini na kiwanda cha uchenjuaji.")
+    else:
+        st.warning(f"⚠️ **LOI ALERT:** Ignition loss of {loi_val}% is high. You may face processing penalties from the smelter.")
+else:
+    if lang == "Kiswahili":
+        st.success(f"✅ **LOI:** {loi_val}% ni kiasi kidogo, uzalishaji utakuwa mzuri.")
+    else:
+        st.success(f"✅ **LOI:** {loi_val}% is low, indicating good processing yield.")
+
                     st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 
                     report_pdf_bytes = create_pdf(val_data, total_value)

@@ -150,10 +150,19 @@ else:
     # --- SUB-PAGE: WELCOME HOME ---
     if nav_selection == "Welcome Home":
         st.title("🔬 Thamani Mineral Analytics")
-        st.write("""Thamani Vision: Bridging Science & Value ,this is where precision meets passion. Building this system was driven by a single goal: to turn complex laboratory data into actionable intelligence. As a **Chemist and Digital Researcher**, I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
-        st.markdown(f"""
+       # --- Section 1: The Vision Statement ---
+        st.write("""
+       ### 💎 Thamani Vision: Bridging Science & Value
+       This is where **precision meets passion**. Building this system was driven by a single goal: 
+       to turn complex laboratory data into actionable intelligence. As a **Chemist and Digital Researcher**, 
+       I believe that the true value of our minerals lies not just in the earth, but in the **clarity** of the data we extract from them.
+       """)
+
+st.divider() # Adds a clean line between the vision and the welcome
+
+# --- Section 2: The User Welcome ---
+st.markdown(f"""
         ### Welcome to the **Thamani Digital Lab**, {st.session_state.current_user}.
-        
         * ⚡ **Auto-Extract:** Read Excel and PDF reports.
         * 🧪 **Stoichiometric Conversion:** Convert Oxides to pure Element %.
         * 💰 **Real-time Valuation:** Estimates TZS value per Metric Ton.

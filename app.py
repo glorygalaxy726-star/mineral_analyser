@@ -237,38 +237,35 @@ else:
                     st.table(pd.DataFrame(val_data))
                     # --- POST-PROCESSING: MOISTURE & LOI ALERTS ---
                     # We assume 'extracted' is your dictionary of results
-                    moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0)
-                    loi_val = extracted.get("LOI", 0)
+                                    # --- DATA EXTRACTION ---
+                moisture_val = extracted.get("H2O", 0) or extracted.get("MOISTURE", 0)
+                loi_val = extracted.get("LOI", 0)
 
-                    # 🚩 Set your limits here
-                    MOISTURE_LIMIT = 5.0  # e.g., 5%
-                    LOI_LIMIT = 10.0      # e.g., 10%
+                st.markdown(f"### {'📋 Ripoti ya Hali' if lang == 'Kiswahili' else '📋 Status Report'}")
 
-                    st.markdown("### 📋 Status Report / Ripoti ya Hali")
+                # --- MOISTURE CHECK WITH RANGES ---
+                if moisture_val > 10.0:
+                    status = "CRITICAL / HATARI" if lang == "Kiswahili" else "CRITICAL"
+                    msg = f"⚠️ {moisture_val}%: Unyevunyevu ni mkubwa mno (>10%). Hatari ya kukatwa bei kwingi." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: Critical moisture (>10%). High risk of massive price deductions."
+                    st.error(msg)
+                elif moisture_val > 5.0:
+                    status = "WARNING / ONYO" if lang == "Kiswahili" else "WARNING"
+                    msg = f"⚠️ {moisture_val}%: Unyevunyevu umezidi (5-10%). Uzito wa maji utakatwa kwenye malipo." if lang == "Kiswahili" else f"⚠️ {moisture_val}%: High moisture (5-10%). Weight deductions will apply."
+                    st.warning(msg)
+                else:
+                    msg = f"✅ {moisture_val}%: Kiwango salama (<5%)." if lang == "Kiswahili" else f"✅ {moisture_val}%: Safe range (<5%)."
+                    st.success(msg)
 
-                    # --- MOISTURE CHECK ---
-                    if moisture_val > MOISTURE_LIMIT:
-                        if lang == "Kiswahili":
-                           st.error(f"⚠️ **ONYO LA UNYEVUNYEVU:** Kiasi cha {moisture_val}% kimezidi kiwango! Hii itapunguza sana bei yako ya mauzo.")
-                        else:
-                            st.error(f"⚠️ **MOISTURE ALERT:** {moisture_val}% exceeds the limit! This will significantly reduce your net sale price.")
-                    else:
-                        if lang == "Kiswahili":
-                           st.success(f"✅ **UNYEVUNYEVU:** {moisture_val}% iko ndani ya kiwango salama.")
-                        else:
-                            st.success(f"✅ **MOISTURE:** {moisture_val}% is within acceptable limits.")
-
-                    # --- LOI CHECK ---
-                    if loi_val > LOI_LIMIT:
-                        if lang == "Kiswahili":
-                           st.warning(f"⚠️ **ONYO LA LOI:** Uzito unaopotea kwa moto ({loi_val}%) ni mkubwa. Unaweza kutozwa faini na kiwanda cha uchenjuaji.")
-                        else:
-                            st.warning(f"⚠️ **LOI ALERT:** Ignition loss of {loi_val}% is high. You may face processing penalties from the smelter.")
-                    else:
-                        if lang == "Kiswahili":
-                           st.success(f"✅ **LOI:** {loi_val}% ni kiasi kidogo, uzalishaji utakuwa mzuri.")
-                        else: 
-                            st.success(f"✅ **LOI:** {loi_val}% is low, indicating good processing yield.")
+                # --- LOI CHECK WITH RANGES ---
+                if loi_val > 20.0:
+                    msg = f"⚠️ {loi_val}%: LOI ni kubwa mno (>20%). Upotezaji mkubwa wa uzito kiwandani." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Extreme LOI (>20%). Significant mass loss in furnace."
+                    st.error(msg)
+                elif loi_val > 10.0:
+                    msg = f"⚠️ {loi_val}%: LOI ya wastani (10-20%). Tarajia faini za uchenjuaji." if lang == "Kiswahili" else f"⚠️ {loi_val}%: Moderate LOI (10-20%). Expect processing penalties."
+                    st.warning(msg)
+                else:
+                    msg = f"✅ {loi_val}%: Kiwango kizuri cha LOI (<10%)." if lang == "Kiswahili" else f"✅ {loi_val}%: Good LOI level (<10%)."
+                    st.success(msg)
 
                             st.metric("Total Market Value", f"{total_value:,.2f} TZS/MT")
                 

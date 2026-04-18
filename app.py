@@ -121,7 +121,7 @@ if auth_choice == "Register":
                           (reg_user, reg_pw, reg_phone, 0))
                 conn.commit()
                 st.success(f"✅ {reg_user} registered permanently! Switch to Login.")
-            
+                st.rerun()
             conn.close()
             
     else:
@@ -141,8 +141,9 @@ if auth_choice == "Register":
     st.divider()
     st.caption("Developed by Glory Benson | Chemist & Digital Researcher | 0616648724")
 
-# --- STEP 2: AUTHORIZED ACCESS ---
-else:
+# --- STEP 2: AUTHORIZED ACCESS (The "Hidden" part) ---
+else: 
+    # EVERYTHING BELOW THIS LINE MUST BE INDENTED!
     st.sidebar.title(f"💎 Welcome, {st.session_state.current_user}")
     nav_selection = st.sidebar.radio("Go to:", ["Welcome Home", "Thamani Mineral Analytics"])
     
@@ -151,7 +152,11 @@ else:
         st.rerun()
 
     if nav_selection == "Welcome Home":
-        st.title("🔬 Thamani Mineral Analytics")
+        st.title("🔬 Welcome Home")
+        # Home content here...
+
+    elif nav_selection == "Thamani Mineral Analytics":
+        st.title("📊 Mineral Analytics")
         st.markdown("""
         ### Welcome to the **Thamani Digital Lab**.
         * ⚡ **Auto-Extract:** Read Excel and PDF reports.
